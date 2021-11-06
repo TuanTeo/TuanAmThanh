@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TuanAmThanh</string>
+    <string name="search">Search</string>
+    <string name="title_home">home</string>
+    <string name="title_dashboard">page2</string>
+    <string name="title_notifications">page3</string>
+</resources>
