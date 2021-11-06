@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="500">
+
+       <KeyFrameSet>
+       </KeyFrameSet>
+        <OnClick motion:targetId="@id/play_song_name"
+            motion:clickAction="toggle" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start"
+        android:layout_height="match_parent">
+        <Constraint
+            android:id="@+id/play_song_name"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintTop_toTopOf="@+id/play_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp" />
+
+        <Constraint
+            android:id="@+id/play_singer_name"
+            motion:layout_constraintTop_toBottomOf="@+id/play_song_name"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_album_image"
+            motion:layout_constraintEnd_toEndOf="@+id/play_container"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintTop_toTopOf="@+id/play_container"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_start_pause_button"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintEnd_toEndOf="@+id/play_container" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_previous_button"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
+            motion:layout_constraintEnd_toStartOf="@+id/play_start_pause_button" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_next_button"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
+            motion:layout_constraintStart_toEndOf="@id/play_start_pause_button"
+            motion:layout_constraintEnd_toEndOf="@+id/play_container" />
+        <Constraint
+            android:id="@+id/play_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@id/play_start_pause_button"
+            android:layout_marginBottom="16dp"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintEnd_toEndOf="@+id/play_container"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:alpha="1.0" />
+        <Constraint
+            android:id="@+id/play_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end"
+        android:layout_height="wrap_content">
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_next_button"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_start_pause_button"
+            motion:layout_constraintEnd_toStartOf="@+id/play_next_button"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_previous_button"
+            motion:layout_constraintEnd_toStartOf="@+id/play_start_pause_button"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_album_image"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
+            motion:layout_constraintStart_toStartOf="@+id/play_container" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:id="@+id/play_song_name"
+            motion:layout_constraintStart_toEndOf="@id/play_album_image"
+            motion:layout_constraintBottom_toTopOf="@id/play_singer_name"
+            motion:layout_constraintEnd_toStartOf="@id/play_previous_button"
+            android:layout_marginStart="8dp" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:id="@+id/play_singer_name"
+            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
+            motion:layout_constraintStart_toEndOf="@id/play_album_image"
+            motion:layout_constraintEnd_toStartOf="@id/play_previous_button"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp" />
+        <Constraint
+            android:id="@+id/play_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="@+id/play_container"
+            motion:layout_constraintBottom_toTopOf="@+id/play_song_name"
+            motion:layout_constraintEnd_toEndOf="@+id/play_container"
+            android:alpha="0.0" />
+        <Constraint
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_container"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent" />
+    </ConstraintSet>
+</MotionScene>

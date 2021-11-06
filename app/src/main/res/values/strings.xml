@@ -4,4 +4,7 @@
     <string name="title_home">home</string>
     <string name="title_dashboard">page2</string>
     <string name="title_notifications">page3</string>
+    <string name="default_song_name">Song Name</string>
+    <string name="default_singer_name">Singer Name</string>
+    <string name="settings">Settings</string>
 </resources>
