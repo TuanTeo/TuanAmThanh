@@ -10,12 +10,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.databinding.ActivityMainBinding;
+import com.dev.tuanteo.tuanamthanh.databinding.MediaPlayerViewBinding;
+import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
+import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
+import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
+    private MediaPlayerViewBinding mMediaPlayerViewBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +42,41 @@ public class MainActivity extends AppCompatActivity {
 
     private void initComponent() {
 
-//         new TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, (tab, position) -> {
-//            String tabName;
-//            if (position == 0) {
-//                tabName = "Home";
-//            } else {
-//                tabName = "Active";
-//            }
+        List<Fragment> listFragments = initListFragments();
+        mBinding.viewPager.setAdapter(new MainPagerAdapter(this, listFragments));
+
+         new TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, (tab, position) -> {
+            String tabName;
+            int icon;
+            if (position == 0) {
+                tabName = "Home";
+                icon = R.drawable.ic_home;
+            } else {
+                tabName = "Active";
+                icon = R.drawable.ic_library_music;
+            }
 //            tab.setText(tabName);
-//        }).attach();
+            tab.setIcon(icon);
+        }).attach();
 
         // TODO: 11/6/2021 tạo fragment player controler
-        mBinding.mainPlayerControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainFrameLayout.getId(), new Fragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+        mBinding.mainPlayerControl.setOnClickListener(v ->
+                showMediaPlayerControlFragment());
+    }
+
+    private List<Fragment> initListFragments() {
+        List<Fragment> listFragment = new ArrayList<>();
+        listFragment.add(new HomeFragment(getApplicationContext()));
+        listFragment.add(new ListAllSongFragment(getApplicationContext()));
+        return listFragment;
+    }
+
+    private void showMediaPlayerControlFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(mBinding.mainFrameLayout.getId(),
+                        new MediaPlayControlFragment(getApplicationContext()))
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

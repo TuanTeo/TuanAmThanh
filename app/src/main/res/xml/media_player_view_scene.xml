@@ -64,14 +64,14 @@
         <Constraint
             android:id="@+id/play_seek_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             motion:layout_constraintBottom_toTopOf="@id/play_start_pause_button"
+            motion:layout_constraintTop_toBottomOf="@+id/play_album_image"
             android:layout_marginBottom="16dp"
             motion:layout_constraintStart_toStartOf="@+id/play_container"
             motion:layout_constraintEnd_toEndOf="@+id/play_container"
             android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:alpha="1.0" />
+            android:layout_marginStart="16dp"/>
         <Constraint
             android:id="@+id/play_container"
             android:layout_width="match_parent"
@@ -126,7 +126,7 @@
         <Constraint
             android:id="@+id/play_seek_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             motion:layout_constraintStart_toStartOf="@+id/play_container"
             motion:layout_constraintBottom_toTopOf="@+id/play_song_name"
             motion:layout_constraintEnd_toEndOf="@+id/play_container"
