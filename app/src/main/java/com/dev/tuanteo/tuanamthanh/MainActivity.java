@@ -29,19 +29,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         /*TuanTeo: Get ActivityMainBinding */
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+
         /*TuanTeo: Show toolbar */
         setSupportActionBar(mBinding.toolBar);
 
+        /*TuanTeo: Khoi tao cac thanh phan cua view chinh */
         initComponent();
 
-        View view = mBinding.getRoot();
-        setContentView(view);
+        setContentView(mBinding.getRoot());
     }
 
     private void initComponent() {
-
+        /*TuanTeo: Danh sach cac pager tren view chinh */
         List<Fragment> listFragments = initListFragments();
         mBinding.viewPager.setAdapter(new MainPagerAdapter(this, listFragments));
 
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 tabName = "Home";
                 icon = R.drawable.ic_home;
             } else {
-                tabName = "Active";
+                tabName = "Library";
                 icon = R.drawable.ic_library_music;
             }
 //            tab.setText(tabName);
