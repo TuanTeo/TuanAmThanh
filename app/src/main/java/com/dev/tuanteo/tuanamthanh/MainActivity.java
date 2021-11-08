@@ -2,8 +2,9 @@ package com.dev.tuanteo.tuanamthanh;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,11 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
-import com.dev.tuanteo.tuanamthanh.databinding.ActivityMainBinding;
-import com.dev.tuanteo.tuanamthanh.databinding.MediaPlayerViewBinding;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -23,31 +23,31 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding mBinding;
-    private MediaPlayerViewBinding mMediaPlayerViewBinding;
+    private ViewPager2 mMainViewPager;
+    private TabLayout mMainTabView;
+    private View mMainPlayerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*TuanTeo: Get ActivityMainBinding */
-        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(R.layout.activity_main);
 
         /*TuanTeo: Show toolbar */
-        setSupportActionBar(mBinding.toolBar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
         /*TuanTeo: Khoi tao cac thanh phan cua view chinh */
         initComponent();
-
-        setContentView(mBinding.getRoot());
     }
 
     private void initComponent() {
         /*TuanTeo: Danh sach cac pager tren view chinh */
         List<Fragment> listFragments = initListFragments();
-        mBinding.viewPager.setAdapter(new MainPagerAdapter(this, listFragments));
+        mMainViewPager = findViewById(R.id.view_pager);
+        mMainViewPager.setAdapter(new MainPagerAdapter(this, listFragments));
 
-         new TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, (tab, position) -> {
+        mMainTabView = findViewById(R.id.tab_layout);
+         new TabLayoutMediator(mMainTabView, mMainViewPager, (tab, position) -> {
             String tabName;
             int icon;
             if (position == 0) {
@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         }).attach();
 
         // TODO: 11/6/2021 tạo fragment player controler
-        mBinding.mainPlayerControl.setOnClickListener(v ->
+        mMainPlayerController = findViewById(R.id.main_player_control);
+        mMainPlayerController.setOnClickListener(v ->
                 showMediaPlayerControlFragment());
     }
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showMediaPlayerControlFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(mBinding.mainFrameLayout.getId(),
+                .replace(R.id.main_frame_layout,
                         new MediaPlayControlFragment(getApplicationContext()))
                 .addToBackStack(null)
                 .commit();
@@ -91,10 +92,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.settings) {
-            if (mBinding.mainPlayerControl.getVisibility() == View.GONE) {
-                mBinding.mainPlayerControl.setVisibility(View.VISIBLE);
+            if (mMainPlayerController.getVisibility() == View.GONE) {
+                mMainPlayerController.setVisibility(View.VISIBLE);
             } else {
-                mBinding.mainPlayerControl.setVisibility(View.GONE);
+                mMainPlayerController.setVisibility(View.GONE);
             }
         }
 
