@@ -26,6 +26,6 @@ public class MediaPlayControlFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         return LayoutInflater.from(mContext)
-                        .inflate(R.layout.media_player_view, container, false);
+                        .inflate(R.layout.media_player_layout, container, false);
     }
 }
