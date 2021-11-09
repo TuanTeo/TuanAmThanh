@@ -45,9 +45,11 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> listFragments = initListFragments();
         mMainViewPager = findViewById(R.id.view_pager);
         mMainViewPager.setAdapter(new MainPagerAdapter(this, listFragments));
+        /*TuanTeo: Khong cho vuot de chuyen pager */
+        mMainViewPager.setUserInputEnabled(false);
 
         mMainTabView = findViewById(R.id.tab_layout);
-         new TabLayoutMediator(mMainTabView, mMainViewPager, (tab, position) -> {
+        new TabLayoutMediator(mMainTabView, mMainViewPager, (tab, position) -> {
             String tabName;
             int icon;
             if (position == 0) {

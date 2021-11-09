@@ -63,4 +63,5 @@ However, if you want to modify a path relative to the motion, for example make i
     <string name="play_random_text">Phát ngẫu nhiên</string>
     <string name="list_song_text">Danh sách bài hát</string>
     <string name="category_image">Category Image</string>
+    <string name="singer_image">singer image</string>
 </resources>

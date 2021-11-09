@@ -20,6 +20,7 @@ public class HomeFragment extends Fragment {
 
     private Context mContext;
     private RecyclerView mCategoryRecyclerView;
+    private RecyclerView mSingerRecyclerView;
 
     public HomeFragment(Context context) {
         this.mContext = context;
@@ -40,11 +41,18 @@ public class HomeFragment extends Fragment {
     // TODO: 11/8/2021 Dang fake du lieu
     @SuppressLint("VisibleForTests")
     private void initComponent(View view) {
+        /*TuanTeo: Category RecyclerView */
+        LinearLayoutManager categoryLayoutManager
+                = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mCategoryRecyclerView = view.findViewById(R.id.category_recycler_view);
         mCategoryRecyclerView.setAdapter(new ListCategoryAdapter(mContext));
+        mCategoryRecyclerView.setLayoutManager(categoryLayoutManager);
 
-        LinearLayoutManager layoutManager
+        /*TuanTeo: Singer RecyclerView */
+        LinearLayoutManager singerLayoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        mCategoryRecyclerView.setLayoutManager(layoutManager);
+        mSingerRecyclerView = view.findViewById(R.id.singer_recycler_view);
+        mSingerRecyclerView.setAdapter(new ListSingerAdapter(mContext));
+        mSingerRecyclerView.setLayoutManager(singerLayoutManager);
     }
 }
