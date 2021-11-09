@@ -78,8 +78,9 @@
             android:id="@+id/play_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
-            motion:layout_constraintEnd_toEndOf="parent" />
+            motion:layout_constraintBottom_toBottomOf="@id/play_start_pause_button"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="@id/play_start_pause_button" />
         <Constraint
             android:id="@+id/play_start_pause_button"
             android:layout_width="wrap_content"
@@ -90,8 +91,9 @@
             android:id="@+id/play_previous_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/play_container"
-            motion:layout_constraintEnd_toStartOf="@+id/play_start_pause_button" />
+            motion:layout_constraintBottom_toBottomOf="@id/play_start_pause_button"
+            motion:layout_constraintEnd_toStartOf="@+id/play_start_pause_button"
+            motion:layout_constraintTop_toTopOf="@id/play_start_pause_button" />
         <Constraint
             android:id="@+id/play_album_image"
             android:layout_width="wrap_content"

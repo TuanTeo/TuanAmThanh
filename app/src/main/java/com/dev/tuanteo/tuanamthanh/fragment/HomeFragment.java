@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListCategoryAdapter;
+import com.dev.tuanteo.tuanamthanh.adapter.ListSingerAdapter;
 
 public class HomeFragment extends Fragment {
 

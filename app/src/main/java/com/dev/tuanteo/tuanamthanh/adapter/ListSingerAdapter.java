@@ -1,4 +1,4 @@
-package com.dev.tuanteo.tuanamthanh.fragment;
+package com.dev.tuanteo.tuanamthanh.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dev.tuanteo.tuanamthanh.R;
-import com.dev.tuanteo.tuanamthanh.adapter.ListCategoryAdapter;
 
 public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.ViewHolder> {
 
