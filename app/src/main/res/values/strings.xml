@@ -62,4 +62,5 @@ You can use parentRelative whenever you want to make an animation that moves thr
 However, if you want to modify a path relative to the motion, for example make it curve just a little bit, the other two coordinate systems are a better choice.</string>
     <string name="play_random_text">Phát ngẫu nhiên</string>
     <string name="list_song_text">Danh sách bài hát</string>
+    <string name="category_image">Category Image</string>
 </resources>
