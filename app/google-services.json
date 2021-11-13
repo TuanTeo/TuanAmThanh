@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "175061010999",
+    "project_id": "tuanamthanh",
+    "storage_bucket": "tuanamthanh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175061010999:android:5fdf8b95dd2c6548334db2",
+        "android_client_info": {
+          "package_name": "com.dev.tuanteo.tuanamthanh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175061010999-07dh4fuh4odntdu90uss0e58btmbj4li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dev.tuanteo.tuanamthanh",
+            "certificate_hash": "abbff4a63e58d220ae1067c386f7cda503985df8"
+          }
+        },
+        {
+          "client_id": "175061010999-6vhhmpe57v7sq6qm6epqo5b4l6bk5tpm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6nSM_f7vV7TXkav78tWdZDyD9zZC5gIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175061010999-6vhhmpe57v7sq6qm6epqo5b4l6bk5tpm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
