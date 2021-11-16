@@ -3,6 +3,7 @@
     package="com.dev.tuanteo.tuanamthanh">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:requestLegacyExternalStorage="true"
@@ -19,6 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".service.MediaPlayService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

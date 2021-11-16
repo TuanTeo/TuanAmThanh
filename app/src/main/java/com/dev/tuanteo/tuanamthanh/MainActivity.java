@@ -3,10 +3,12 @@ package com.dev.tuanteo.tuanamthanh;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +21,8 @@ import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
+import com.dev.tuanteo.tuanamthanh.units.Constant;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -104,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        /*TuanTeo: stop Service */
+        stopMediaPlayService();
+    }
+
+    @Override
     public void playSong(Song song) {
         if (mMainPlayerController.getVisibility() == View.GONE) {
             mMainPlayerController.setVisibility(View.VISIBLE);
@@ -112,5 +124,26 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         }
 
         // TODO: 11/16/2021 Chạy foreground Servive choi nhac
+        startMediaPlayService(song.getId(), song.getPath());
+    }
+
+    /**
+     * Start MediaPlayService
+     * @param songId        song id to start the first time
+     * @param songPath      song path to start the first time
+     */
+    private void startMediaPlayService(long songId, String songPath) {
+        Intent serviceIntent = new Intent(this, MediaPlayService.class);
+        serviceIntent.putExtra(Constant.SONG_ID_TO_START_SERVICE, songId);
+        serviceIntent.putExtra(Constant.SONG_PATH_START_SERVICE, songPath);
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    /**
+     * Stop MediaPlayService
+     */
+    public void stopMediaPlayService() {
+        Intent serviceIntent = new Intent(getApplicationContext(), MediaPlayService.class);
+        stopService(serviceIntent);
     }
 }
