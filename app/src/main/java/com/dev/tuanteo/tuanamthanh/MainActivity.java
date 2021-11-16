@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,13 +17,15 @@ import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
+import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
+import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ILocalSongClickListener {
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
@@ -38,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         /*TuanTeo: Khoi tao cac thanh phan cua view chinh */
         initComponent();
+
+        // TODO: 11/16/2021 Xu ly logic xin quyen hẳn hoi
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+        }
     }
 
     private void initComponent() {
@@ -63,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             tab.setIcon(icon);
         }).attach();
 
-        // TODO: 11/6/2021 tạo fragment player controler
         mMainPlayerController = findViewById(R.id.main_player_control);
         mMainPlayerController.setOnClickListener(v ->
                 showMediaPlayerControlFragment());
@@ -72,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> initListFragments() {
         List<Fragment> listFragment = new ArrayList<>();
         listFragment.add(new HomeFragment(getApplicationContext()));
-        listFragment.add(new ListAllSongFragment(getApplicationContext()));
+        listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
         return listFragment;
     }
 
@@ -92,15 +100,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 
-        if (item.getItemId() == R.id.settings) {
-            if (mMainPlayerController.getVisibility() == View.GONE) {
-                mMainPlayerController.setVisibility(View.VISIBLE);
-            } else {
-                mMainPlayerController.setVisibility(View.GONE);
-            }
+    @Override
+    public void playSong(Song song) {
+        if (mMainPlayerController.getVisibility() == View.GONE) {
+            mMainPlayerController.setVisibility(View.VISIBLE);
+        } else {
+            mMainPlayerController.setVisibility(View.GONE);
         }
 
-        return super.onOptionsItemSelected(item);
+        // TODO: 11/16/2021 Chạy foreground Servive choi nhac
     }
 }

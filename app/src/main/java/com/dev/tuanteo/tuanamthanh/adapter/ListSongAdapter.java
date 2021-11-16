@@ -32,6 +32,10 @@ public class ListSongAdapter<V extends RecyclerView.ViewHolder> extends Recycler
 
     @Override
     public int getItemCount() {
-        return 15;
+        if (mListSong != null) {
+            return mListSong.size();
+        } else {
+            return 15;
+        }
     }
 }
