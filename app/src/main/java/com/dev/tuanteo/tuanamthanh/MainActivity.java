@@ -8,9 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,17 +28,42 @@ import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
+import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements ILocalSongClickListener {
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
     private View mMainPlayerController;
+
+    private MediaPlayService mMediaService;
+    private boolean mIsBoundMediaService;
+
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mMediaServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MediaPlayService.BoundService binder = (MediaPlayService.BoundService) service;
+            mMediaService = binder.getService();
+            mIsBoundMediaService = true;
+            LogUtils.log("mMediaServiceConnection onServiceConnected: ");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mIsBoundMediaService = false;
+            LogUtils.log("mMediaServiceConnection onServiceDisconnected: ");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +111,16 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 showMediaPlayerControlFragment());
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //TuanTeo: Bind to MediaPlayService if Service is Running
+        if (isServiceRunning(MediaPlayService.class)) {
+            bindMediaPlayService();
+        }
+    }
+
     private List<Fragment> initListFragments() {
         List<Fragment> listFragment = new ArrayList<>();
         listFragment.add(new HomeFragment(getApplicationContext()));
@@ -108,6 +148,17 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        /*TuanTeo: Unbind MediaPlayService */
+        if (mIsBoundMediaService) {
+            unbindService(mMediaServiceConnection);
+            mIsBoundMediaService = false;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -117,14 +168,26 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
     @Override
     public void playSong(Song song) {
-        if (mMainPlayerController.getVisibility() == View.GONE) {
-            mMainPlayerController.setVisibility(View.VISIBLE);
-        } else {
-            mMainPlayerController.setVisibility(View.GONE);
-        }
+        if (!mIsBoundMediaService && mMediaService == null) {
+            if (mMainPlayerController.getVisibility() == View.GONE) {
+                mMainPlayerController.setVisibility(View.VISIBLE);
+            }
 
-        // TODO: 11/16/2021 Chạy foreground Servive choi nhac
-        startMediaPlayService(song.getId(), song.getPath());
+            // TODO: 11/16/2021 Chạy foreground Servive choi nhac
+            startMediaPlayService(song.getId(), song.getPath());
+            bindMediaPlayService();
+        } else {
+            /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
+            mMediaService.playSong(song);
+        }
+    }
+
+    /**
+     * Bind MediaPlayService
+     */
+    private void bindMediaPlayService() {
+        Intent intent = new Intent(getApplicationContext(), MediaPlayService.class);
+        bindService(intent, mMediaServiceConnection, BIND_AUTO_CREATE);
     }
 
     /**
@@ -145,5 +208,20 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     public void stopMediaPlayService() {
         Intent serviceIntent = new Intent(getApplicationContext(), MediaPlayService.class);
         stopService(serviceIntent);
+    }
+
+    /**
+     * Ham check Service có đang hoạt động hay không
+     * @param serviceClass  service muốn kiểm tra
+     * @return  boolean-true nếu đang hoạt động, false thì ngược lại
+     */
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (Objects.equals(serviceClass.getName(), service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

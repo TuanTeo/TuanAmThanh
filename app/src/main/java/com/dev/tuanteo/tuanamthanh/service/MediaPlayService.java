@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -17,7 +18,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
+import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 
 import java.io.IOException;
 
@@ -26,6 +29,7 @@ public class MediaPlayService extends Service {
     private static final String MEDIA_CHANNEL_ID = "media channel id";
     private static final int NOTIFICATION_ID = 333;
 
+    private IBinder mBinder = new BoundService();
     private MediaPlayer mMediaPlayer;
 
     private long mPlayingSongID;
@@ -34,10 +38,13 @@ public class MediaPlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtils.log("MediaPlayService onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtils.log("MediaPlayService onStartCommand");
+
         mPlayingSongID = intent.getLongExtra(Constant.SONG_ID_TO_START_SERVICE, -1);
         mPlayingSongPath = intent.getStringExtra(Constant.SONG_PATH_START_SERVICE);
 
@@ -72,6 +79,8 @@ public class MediaPlayService extends Service {
     }
 
     private void playMusic() {
+        LogUtils.log("MediaPlayService playMusic " + mPlayingSongPath);
+
         try {
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setDataSource(getApplicationContext(), Uri.parse(mPlayingSongPath));
@@ -97,15 +106,44 @@ public class MediaPlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtils.log("MediaPlayService onDestroy");
 
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
+            mMediaPlayer.release();
         }
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        LogUtils.log("MediaPlayService onBind");
+
+        return mBinder;
+    }
+
+    /**
+     * Class to bind MediaPlayService
+     */
+    public class BoundService extends Binder {
+        public MediaPlayService getService() {
+            return MediaPlayService.this;
+        }
+    }
+
+    public void playSong(Song song) {
+        mPlayingSongID = song.getId();
+        mPlayingSongPath = song.getPath();
+        stopMusic();
+        playMusic();
+    }
+
+    private void stopMusic() {
+        // TODO: 11/18/2021 Stop bằng cách hay hơn
+        LogUtils.log("MediaPlayService stopMusic");
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.stop();
+        }
+        mMediaPlayer.reset();
     }
 }
