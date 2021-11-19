@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
@@ -40,7 +41,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
+
+    /*TuanTeo: View cho controller */
     private View mMainPlayerController;
+    private TextView mSongNameController;
+    private TextView mSingerNameController;
 
     private MediaPlayService mMediaService;
     private boolean mIsBoundMediaService;
@@ -109,6 +114,19 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         mMainPlayerController = findViewById(R.id.main_player_control);
         mMainPlayerController.setOnClickListener(v ->
                 showMediaPlayerControlFragment());
+
+        /*TuanTeo: Khởi tạo giá trị cho thanh điều khiển nhạc */
+        initMainControllerComponent();
+    }
+
+    /**
+     * Các thành phần của MainPlayerController
+     */
+    private void initMainControllerComponent() {
+        mSongNameController = findViewById(R.id.main_player_control_song_name);
+        mSongNameController.setSelected(true);
+
+        mSingerNameController = findViewById(R.id.main_player_control_singer_name);
     }
 
     @Override
@@ -121,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         }
     }
 
+    /**
+     * Danh sách các Fragment hiển thị trên view chính
+     * @return
+     */
     private List<Fragment> initListFragments() {
         List<Fragment> listFragment = new ArrayList<>();
         listFragment.add(new HomeFragment(getApplicationContext()));
@@ -128,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         return listFragment;
     }
 
+    /**
+     * Hiển thị giao diện MainPlayerController
+     */
     private void showMediaPlayerControlFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_frame_layout,
@@ -168,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
     @Override
     public void playSong(Song song) {
+        /*TuanTeo: Cập nhật UI trên giao diên điều khiển nhạc */
+        updateUIMainPlayerController(song);
+
         if (!mIsBoundMediaService && mMediaService == null) {
             if (mMainPlayerController.getVisibility() == View.GONE) {
                 mMainPlayerController.setVisibility(View.VISIBLE);
@@ -180,6 +208,15 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
             mMediaService.playSong(song);
         }
+    }
+
+    /**
+     * Cập nhật giao diện điều khiển nhạc mini
+     * @param song bài hát đang phát
+     */
+    private void updateUIMainPlayerController(Song song) {
+        mSongNameController.setText(song.getName());
+        mSingerNameController.setText(song.getArtist());
     }
 
     /**
