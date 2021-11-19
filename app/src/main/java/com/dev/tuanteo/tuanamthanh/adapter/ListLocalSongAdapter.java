@@ -51,12 +51,12 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         holder.getSongName().setText(mListSong.get(position).getName());
         holder.getSingerName().setText(mListSong.get(position).getArtist());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            try {
-                holder.getSongImageview().setImageBitmap(
-                        getAlbumArtwork(mContext.getContentResolver(), mListSong.get(position).getId()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            Uri imageUri = queryAlbumUri(mListSong.get(position).getId());
+//            if (imageUri != null) {
+//                holder.getSongImageview().setImageURI(imageUri);
+//            } else {
+//                holder.getSongImageview().setImageResource(R.drawable.song_image);
+//            }
         }
     }
 
@@ -94,14 +94,14 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         }
     }
 
-    // TODO: 11/16/2021 Lay anh cua album
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private Bitmap getAlbumArtwork(ContentResolver resolver, long albumId) throws IOException {
-        Uri contentUri = ContentUris.withAppendedId(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                albumId
-        );
-
-        return resolver.loadThumbnail(contentUri, new Size(640, 480), null);
+    /**
+     * Tuantqd
+     * Function to get Image Uri by AlbumID
+     * @param imgUri
+     * @return
+     */
+    public static Uri queryAlbumUri(String imgUri) {   //dung album de load anh
+        final Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
+        return ContentUris.withAppendedId(artworkUri, Long.parseLong(imgUri));  //noi them imgUri vao artworkUri
     }
 }

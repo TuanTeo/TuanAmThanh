@@ -64,11 +64,16 @@ public class ListAllSongFragment extends Fragment {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
         String[] projection = {
-                MediaStore.Audio.AudioColumns.DATA,         //0
-                MediaStore.Audio.AudioColumns.TITLE,        //1
-                MediaStore.Audio.AudioColumns.ALBUM,        //2
-                MediaStore.Audio.ArtistColumns.ARTIST,      //3
-                MediaStore.Audio.Media.ALBUM_ID,            //4
+                MediaStore.Audio.AudioColumns.TITLE,// 0
+                MediaStore.Audio.AudioColumns.TRACK,// 1
+                MediaStore.Audio.AudioColumns.YEAR,// 2
+                MediaStore.Audio.AudioColumns.DURATION,// 3
+                MediaStore.Audio.AudioColumns.DATA,// 4
+                MediaStore.Audio.AudioColumns.ALBUM,// 5
+                MediaStore.Audio.AudioColumns.ARTIST_ID,// 6
+                MediaStore.Audio.AudioColumns.ARTIST,// 7
+                MediaStore.Audio.Media.ALBUM_ID, //8
+                MediaStore.Audio.Albums._ID // 9
         };
 
         // if want fetch all files
@@ -81,11 +86,12 @@ public class ListAllSongFragment extends Fragment {
         if (c != null) {
             while (c.moveToNext()) {
                 Song audioModel = new Song();
-                String path = c.getString(0);
-                String name = c.getString(1);
-                String album = c.getString(2);
-                String artist = c.getString(3);
-                long id = c.getLong(4);
+                String path = c.getString(4);
+                String name = c.getString(0);
+                String album = c.getString(5);
+                String artist = c.getString(7);
+                String id = c.getString(8);
+                int duration = c.getInt(3);
 
                 audioModel.setId(id);
                 audioModel.setName(name);
@@ -93,10 +99,14 @@ public class ListAllSongFragment extends Fragment {
                 audioModel.setArtist(artist);
                 audioModel.setPath(path);
 
-                Log.e("Name :" + name, " Album :" + album);
-                Log.e("Path :" + path, " Artist :" + artist);
+                Log.d("Name :" + name, " Album :" + album);
+                Log.d("Path :" + path, " Artist :" + artist);
+                Log.d("id:", path);
 
-                tempAudioList.add(audioModel);
+                /*TuanTeo: Chi lay file am thanh tren 5s */
+                if (duration >= 5000) {
+                    tempAudioList.add(audioModel);
+                }
             }
             c.close();
         }

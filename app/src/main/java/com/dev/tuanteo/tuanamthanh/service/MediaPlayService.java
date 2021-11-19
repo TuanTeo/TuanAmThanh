@@ -32,7 +32,7 @@ public class MediaPlayService extends Service {
     private IBinder mBinder = new BoundService();
     private MediaPlayer mMediaPlayer;
 
-    private long mPlayingSongID;
+    private String mPlayingSongID;
     private String mPlayingSongPath;
 
     @Override
@@ -45,7 +45,7 @@ public class MediaPlayService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtils.log("MediaPlayService onStartCommand");
 
-        mPlayingSongID = intent.getLongExtra(Constant.SONG_ID_TO_START_SERVICE, -1);
+        mPlayingSongID = intent.getStringExtra(Constant.SONG_ID_TO_START_SERVICE);
         mPlayingSongPath = intent.getStringExtra(Constant.SONG_PATH_START_SERVICE);
 
         initComponent();

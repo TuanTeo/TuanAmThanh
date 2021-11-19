@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param songId        song id to start the first time
      * @param songPath      song path to start the first time
      */
-    private void startMediaPlayService(long songId, String songPath) {
+    private void startMediaPlayService(String songId, String songPath) {
         Intent serviceIntent = new Intent(this, MediaPlayService.class);
         serviceIntent.putExtra(Constant.SONG_ID_TO_START_SERVICE, songId);
         serviceIntent.putExtra(Constant.SONG_PATH_START_SERVICE, songPath);
