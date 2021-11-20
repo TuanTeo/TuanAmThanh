@@ -19,7 +19,9 @@ import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private View mMainPlayerController;
     private TextView mSongNameController;
     private TextView mSingerNameController;
+    private ImageButton mPlayPauseButtonController;
+    private ImageButton mPreviousButtonController;
+    private ImageButton mNextButtonController;
 
     private MediaPlayService mMediaService;
     private boolean mIsBoundMediaService;
@@ -127,6 +132,29 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         mSongNameController.setSelected(true);
 
         mSingerNameController = findViewById(R.id.main_player_control_singer_name);
+
+        /*TuanTeo: Nut play/pause giao diện controller */
+        mPlayPauseButtonController = findViewById(R.id.main_player_control_pause_button);
+        mPlayPauseButtonController.setOnClickListener(view -> {
+            if (mMediaService != null) {
+                if (mMediaService.isPlayingMusic()) {
+                    mPlayPauseButtonController.setImageResource(R.drawable.ic_play_circle_controler);
+                } else {
+                    mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);
+                }
+                mMediaService.pauseOrResumeMusic();
+            }
+        });
+
+        // TODO: 11/20/2021 Set sự kiện cho nút next prev
+        mPreviousButtonController = findViewById(R.id.main_player_control_previous_button);
+        mPreviousButtonController.setOnClickListener(view -> {
+            Toast.makeText(getApplicationContext(), "PreviousButtonController clicked", Toast.LENGTH_SHORT).show();
+        });
+        mNextButtonController = findViewById(R.id.main_player_control_next_button);
+        mNextButtonController.setOnClickListener(view -> {
+            Toast.makeText(getApplicationContext(), "NextButtonController clicked", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

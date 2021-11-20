@@ -29,7 +29,7 @@ public class MediaPlayService extends Service {
     private static final String MEDIA_CHANNEL_ID = "media channel id";
     private static final int NOTIFICATION_ID = 333;
 
-    private IBinder mBinder = new BoundService();
+    private final IBinder mBinder = new BoundService();
     private MediaPlayer mMediaPlayer;
 
     private String mPlayingSongID;
@@ -123,6 +123,14 @@ public class MediaPlayService extends Service {
     }
 
     /**
+     * Lay trang thai service dang phat nhac hay khong
+     * @return boolean trang thai dang phát nhac
+     */
+    public boolean isPlayingMusic() {
+        return mMediaPlayer.isPlaying();
+    }
+
+    /**
      * Class to bind MediaPlayService
      */
     public class BoundService extends Binder {
@@ -131,6 +139,10 @@ public class MediaPlayService extends Service {
         }
     }
 
+    /**
+     * Hàm phát 1 bài hát chỉ định
+     * @param song bài hát chỉ định
+     */
     public void playSong(Song song) {
         mPlayingSongID = song.getId();
         mPlayingSongPath = song.getPath();
@@ -138,6 +150,9 @@ public class MediaPlayService extends Service {
         playMusic();
     }
 
+    /**
+     * Tam dung phat nhac
+     */
     private void stopMusic() {
         // TODO: 11/18/2021 Stop bằng cách hay hơn
         LogUtils.log("MediaPlayService stopMusic");
@@ -145,5 +160,32 @@ public class MediaPlayService extends Service {
             mMediaPlayer.stop();
         }
         mMediaPlayer.reset();
+    }
+
+    /**
+     * Ham goi khi bấm nút play/pause
+     */
+    public void pauseOrResumeMusic() {
+        if (mMediaPlayer.isPlaying()) {
+            pauseMusic();
+        } else {
+            resumeMusic();
+        }
+    }
+
+    /**
+     * Ham pause music
+     */
+    private void pauseMusic() {
+        LogUtils.log("MediaPlayService pauseMusic");
+        mMediaPlayer.pause();
+    }
+
+    /**
+     * Ham resume music
+     */
+    private void resumeMusic() {
+        LogUtils.log("MediaPlayService resumeMusic");
+        mMediaPlayer.start();
     }
 }
