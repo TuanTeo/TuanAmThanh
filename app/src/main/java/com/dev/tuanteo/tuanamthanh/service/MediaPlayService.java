@@ -92,6 +92,8 @@ public class MediaPlayService extends Service {
             mMediaPlayer.setDataSource(getApplicationContext(), Uri.parse(mPlayingSongPath));
             mMediaPlayer.prepare();
             mMediaPlayer.start();
+
+            mMediaPlayer.setOnCompletionListener(mp -> autoNextMedia());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -245,5 +247,11 @@ public class MediaPlayService extends Service {
      */
     public Song getCurrentPlaySong() {
         return mListPlaySong.get(mPlayIndex);
+    }
+
+    private void autoNextMedia() {
+        // TODO: 11/21/2021 them logic kiem tra co phat lai hay khong o day
+        // TODO: 11/21/2021 them logic cập nhật UI cho MainActivity bằng broadcast
+        nextMusic();
     }
 }
