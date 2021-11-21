@@ -7,4 +7,9 @@
     <style name="ShapeAppearanceOverlay.LocalSongCornerSize">
         <item name="cornerSize">20%</item>
     </style>
+
+    <style name="ImageButtonEffect">
+        <item name="android:backgroundTint">@android:color/transparent</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
 </resources>
