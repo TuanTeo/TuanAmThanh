@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Style ảnh tròn -->
     <style name="ShapeAppearanceOverlay.ShapeCornerSize">
         <item name="cornerSize">50%</item>
     </style>
@@ -8,6 +9,7 @@
         <item name="cornerSize">20%</item>
     </style>
 
+    <!-- Style effect image button -->
     <style name="ImageButtonEffect">
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>

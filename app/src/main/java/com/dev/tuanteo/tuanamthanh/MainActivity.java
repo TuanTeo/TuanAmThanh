@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
@@ -57,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private MediaPlayService mMediaService;
     private boolean mIsBoundMediaService;
 
+    private MediaPlayControlFragment mMediaPlayControlFragment;
+
     /** Defines callbacks for service binding, passed to bindService() */
     private final ServiceConnection mMediaServiceConnection = new ServiceConnection() {
 
@@ -68,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             mMediaService = binder.getService();
             mIsBoundMediaService = true;
             LogUtils.log("mMediaServiceConnection onServiceConnected: ");
+
+            /*TuanTeo: Cap nhat lai UI khi bind service luc mo lai app */
+            if (mMediaService.isPlayingMusic()) {
+                updateUIMainPlayerController(mMediaService.getCurrentPlaySong());
+            }
         }
 
         @Override
@@ -88,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
             mSongNameController.setText(songName);
             mSingerNameController.setText(singerName);
+
+            /*TuanTeo: Cập nhật cả UI trên MediaPlayControlFragment */
+            mMediaPlayControlFragment.updateUI();
         }
     };
 
@@ -203,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * Hiển thị giao diện MainPlayerController
      */
     private void showMediaPlayerControlFragment() {
+        mMediaPlayControlFragment = new MediaPlayControlFragment(getApplicationContext(), mMediaService);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_frame_layout,
-                        new MediaPlayControlFragment(getApplicationContext()))
+                .replace(R.id.main_frame_layout, mMediaPlayControlFragment)
                 .addToBackStack(null)
                 .commit();
     }
