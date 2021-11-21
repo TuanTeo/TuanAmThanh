@@ -149,11 +149,13 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         // TODO: 11/20/2021 Set sự kiện cho nút next prev
         mPreviousButtonController = findViewById(R.id.main_player_control_previous_button);
         mPreviousButtonController.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), "PreviousButtonController clicked", Toast.LENGTH_SHORT).show();
+            mMediaService.previousMusic();
+            updateUIMainPlayerController(mMediaService.getCurrentPlaySong());
         });
         mNextButtonController = findViewById(R.id.main_player_control_next_button);
         mNextButtonController.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), "NextButtonController clicked", Toast.LENGTH_SHORT).show();
+            mMediaService.nextMusic();
+            updateUIMainPlayerController(mMediaService.getCurrentPlaySong());
         });
     }
 
@@ -243,8 +245,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param song bài hát đang phát
      */
     private void updateUIMainPlayerController(Song song) {
+        LogUtils.log("updateUIMainPlayerController " + song.getName());
         mSongNameController.setText(song.getName());
         mSingerNameController.setText(song.getArtist());
+        mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);
     }
 
     /**

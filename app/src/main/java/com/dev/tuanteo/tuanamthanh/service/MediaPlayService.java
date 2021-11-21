@@ -20,9 +20,11 @@ import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
+import com.dev.tuanteo.tuanamthanh.units.LocalSongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MediaPlayService extends Service {
 
@@ -32,6 +34,9 @@ public class MediaPlayService extends Service {
     private final IBinder mBinder = new BoundService();
     private MediaPlayer mMediaPlayer;
 
+    /*TuanTeo: Thông tin danh sách bài hát */
+    private ArrayList<Song> mListPlaySong;
+    private int mPlayIndex;
     private String mPlayingSongID;
     private String mPlayingSongPath;
 
@@ -39,6 +44,7 @@ public class MediaPlayService extends Service {
     public void onCreate() {
         super.onCreate();
         LogUtils.log("MediaPlayService onCreate");
+        new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
     }
 
     @Override
@@ -89,6 +95,9 @@ public class MediaPlayService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        /*TuanTeo: Update lại vị trí bài hát đang chơi trong danh sách */
+        updatePlaySongIndex();
     }
 
     private void createNotificationChannel() {
@@ -187,5 +196,54 @@ public class MediaPlayService extends Service {
     private void resumeMusic() {
         LogUtils.log("MediaPlayService resumeMusic");
         mMediaPlayer.start();
+    }
+
+    /**
+     * Next bài hát
+     */
+    public void nextMusic() {
+        if (mPlayIndex == mListPlaySong.size() - 1) {
+            mPlayIndex = 0;
+        } else {
+            ++mPlayIndex;
+        }
+        playSong(mListPlaySong.get(mPlayIndex));
+        LogUtils.log("nextMusic playSong index " + mPlayIndex);
+    }
+
+    /**
+     * Lùi bài hát
+     */
+    public void previousMusic() {
+        if (mPlayIndex == 0) {
+            mPlayIndex = mListPlaySong.size() - 1;
+        } else {
+            --mPlayIndex;
+        }
+        playSong(mListPlaySong.get(mPlayIndex));
+        LogUtils.log("nextMusic playSong index " + mPlayIndex);
+    }
+
+    /**
+     * Luồng update lại vị trí bài hát đang chơi trong danh sách
+     */
+    private void updatePlaySongIndex() {
+        new Thread(()-> {
+            for (int i=0; i< mListPlaySong.size(); i++) {
+                if (mPlayingSongID.equals(mListPlaySong.get(i).getId())) {
+                    mPlayIndex = i;
+                    LogUtils.log("updatePlaySongIndex mPlayIndex = " + i);
+                    break;
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Hàm trả về bài hát đang chơi (dùng cho việc update UI)
+     * @return current play song
+     */
+    public Song getCurrentPlaySong() {
+        return mListPlaySong.get(mPlayIndex);
     }
 }
