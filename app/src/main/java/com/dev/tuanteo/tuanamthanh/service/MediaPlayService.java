@@ -251,7 +251,24 @@ public class MediaPlayService extends Service {
 
     private void autoNextMedia() {
         // TODO: 11/21/2021 them logic kiem tra co phat lai hay khong o day
-        // TODO: 11/21/2021 them logic cập nhật UI cho MainActivity bằng broadcast
+
+        /*TuanTeo: Logic phát bài hát tiếp theo */
         nextMusic();
+
+        /*TuanTeo: Gửi broadcast để cập nhật UI */
+        sendBroadcastUpdateUI();
+    }
+
+    /**
+     * Hàm gửi broadcast cập nhật UI trên MainActivity
+     */
+    private void sendBroadcastUpdateUI() {
+        Song currentSong = mListPlaySong.get(mPlayIndex);
+
+        Intent intent = new Intent(Constant.ACTION_UPDATE_UI);
+        intent.putExtra(Constant.SONG_NAME_TO_START_SERVICE, currentSong.getName());
+        intent.putExtra(Constant.SINGER_NAME_TO_START_SERVICE, currentSong.getArtist());
+
+        sendBroadcast(intent);
     }
 }

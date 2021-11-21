@@ -9,9 +9,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private boolean mIsBoundMediaService;
 
     /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection mMediaServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mMediaServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -72,6 +74,20 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         public void onServiceDisconnected(ComponentName arg0) {
             mIsBoundMediaService = false;
             LogUtils.log("mMediaServiceConnection onServiceDisconnected: ");
+        }
+    };
+
+    /**
+     * BroadcastReceiver for update UI from service
+     */
+    private final BroadcastReceiver mUpdateUIReceive = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String songName = intent.getStringExtra(Constant.SONG_NAME_TO_START_SERVICE);
+            String singerName = intent.getStringExtra(Constant.SINGER_NAME_TO_START_SERVICE);
+
+            mSongNameController.setText(songName);
+            mSingerNameController.setText(singerName);
         }
     };
 
@@ -167,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         if (isServiceRunning(MediaPlayService.class)) {
             bindMediaPlayService();
         }
+
+        /*TuanTeo: Dang ky lang nghe broadcast */
+        registerReceiver(mUpdateUIReceive, new IntentFilter(Constant.ACTION_UPDATE_UI));
     }
 
     /**
@@ -211,6 +230,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             unbindService(mMediaServiceConnection);
             mIsBoundMediaService = false;
         }
+
+        /*TuanTeo: Huy lắng nghe su kien UpdateUI tu Service */
+        unregisterReceiver(mUpdateUIReceive);
     }
 
     @Override
