@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private final BroadcastReceiver mUpdateUIReceive = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            LogUtils.log("mUpdateUIReceive updateUI");
+
             String songName = intent.getStringExtra(Constant.SONG_NAME_TO_START_SERVICE);
             String singerName = intent.getStringExtra(Constant.SINGER_NAME_TO_START_SERVICE);
 
@@ -96,7 +98,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             mSingerNameController.setText(singerName);
 
             /*TuanTeo: Cập nhật cả UI trên MediaPlayControlFragment */
-            mMediaPlayControlFragment.updateUI();
+            if (mMediaPlayControlFragment != null) {
+                mMediaPlayControlFragment.updateUI();
+            }
         }
     };
 

@@ -211,6 +211,8 @@ public class MediaPlayService extends Service {
         }
         playSong(mListPlaySong.get(mPlayIndex));
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
+
+        sendBroadcastUpdateUI();
     }
 
     /**
@@ -224,6 +226,8 @@ public class MediaPlayService extends Service {
         }
         playSong(mListPlaySong.get(mPlayIndex));
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
+
+        sendBroadcastUpdateUI();
     }
 
     /**
@@ -254,9 +258,6 @@ public class MediaPlayService extends Service {
 
         /*TuanTeo: Logic phát bài hát tiếp theo */
         nextMusic();
-
-        /*TuanTeo: Gửi broadcast để cập nhật UI */
-        sendBroadcastUpdateUI();
     }
 
     /**
