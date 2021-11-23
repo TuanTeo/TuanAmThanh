@@ -2,11 +2,11 @@ package com.dev.tuanteo.tuanamthanh.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
+import com.dev.tuanteo.tuanamthanh.units.LogUtils;
+import com.dev.tuanteo.tuanamthanh.view.CircularSeekBar;
 
 public class MediaPlayControlFragment extends Fragment {
 
@@ -28,7 +30,7 @@ public class MediaPlayControlFragment extends Fragment {
     private ImageButton mPlayPauseButton;
     private ImageButton mPreviousButton;
     private ImageButton mNextButton;
-    private SeekBar mSeekBar;
+    private CircularSeekBar mSeekBar;
 
     public MediaPlayControlFragment(Context mContext, MediaPlayService mediaPlayService) {
         this.mContext = mContext;
@@ -75,19 +77,23 @@ public class MediaPlayControlFragment extends Fragment {
         });
 
         mSeekBar = view.findViewById(R.id.play_seek_bar);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                LogUtils.log("onProgressChanged progress " + progress);
+                mSeekBar.setProgress(progress);
+                if (fromUser) {
+                    mMediaPlayService.getMediaPlayer().seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
 
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
 
             }
         });
@@ -106,5 +112,7 @@ public class MediaPlayControlFragment extends Fragment {
         } else {
             mPlayPauseButton.setImageResource(R.drawable.ic_play_circle_control);
         }
+
+        mSeekBar.setMax(mMediaPlayService.getCurrentPlaySong().getDuration());
     }
 }

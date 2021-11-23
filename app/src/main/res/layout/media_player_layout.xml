@@ -61,6 +61,7 @@
         app:layout_constraintStart_toEndOf="@+id/play_next_button"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/play_current_time"
         android:text="@string/default_current_time"
         android:layout_width="wrap_content"
@@ -69,6 +70,7 @@
         app:layout_constraintStart_toStartOf="@+id/play_seek_bar" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/play_total_time"
         android:text="@string/default_total_time"
         android:layout_width="wrap_content"
@@ -76,16 +78,18 @@
         app:layout_constraintBottom_toTopOf="@+id/play_seek_bar"
         app:layout_constraintEnd_toEndOf="@+id/play_seek_bar" />
 
-    <SeekBar
+    <com.dev.tuanteo.tuanamthanh.view.CircularSeekBar
         android:id="@+id/play_seek_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/play_start_pause_button"
-        app:layout_constraintEnd_toEndOf="@+id/play_album_image"
-        app:layout_constraintStart_toStartOf="@+id/play_album_image" />
+        android:layout_width="335dp"
+        android:layout_height="335dp"
+        android:layout_marginBottom="100dp"
+        app:pointer_color="@android:color/transparent"
+        app:pointer_halo_color="@android:color/transparent"
+        app:pointer_alpha_ontouch="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/play_singer_name"

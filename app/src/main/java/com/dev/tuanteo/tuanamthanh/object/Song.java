@@ -6,6 +6,7 @@ public class Song {
     private String album;
     private String artist; //singer
     private String path;
+    private int mDuration;
 
     public String getId() {
         return id;
@@ -45,5 +46,13 @@ public class Song {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public void setDuration(int duration) {
+        mDuration = duration;
+    }
+
+    public int getDuration() {
+        return mDuration;
     }
 }

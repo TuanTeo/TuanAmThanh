@@ -54,6 +54,7 @@ public class LocalSongUtils {
                 audioModel.setAlbum(album);
                 audioModel.setArtist(artist);
                 audioModel.setPath(path);
+                audioModel.setDuration(duration);
 
                 Log.d("Name :" + name, " Album :" + album);
                 Log.d("Path :" + path, " Artist :" + artist);

@@ -272,4 +272,10 @@ public class MediaPlayService extends Service {
 
         sendBroadcast(intent);
     }
+
+
+    /*TuanTeo: Lấy biến MediaPlayer */
+    public MediaPlayer getMediaPlayer() {
+        return mMediaPlayer;
+    }
 }
