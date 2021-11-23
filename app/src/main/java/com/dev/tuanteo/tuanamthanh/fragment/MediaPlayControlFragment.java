@@ -32,6 +32,24 @@ public class MediaPlayControlFragment extends Fragment {
     private ImageButton mNextButton;
     private CircularSeekBar mSeekBar;
 
+    /*TuanTeo: bien luu trang thai dang hien thi cua fragment */
+    private boolean mIsDisplaying;
+
+    /*TuanTeo: Dung de cap nhat lai tien trinh seekbar */
+    private final Handler mSeekHandler = new Handler();
+    private final Runnable mUpdateSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            // Updating progress bar
+            mSeekBar.setProgress(mMediaPlayService.getMediaPlayer().getCurrentPosition());
+
+            if (mIsDisplaying) {
+                // Call this thread again after 15 milliseconds => ~ 1000/60fps
+                mSeekHandler.postDelayed(this, 15);
+            }
+        }
+    };
+
     public MediaPlayControlFragment(Context mContext, MediaPlayService mediaPlayService) {
         this.mContext = mContext;
         mMediaPlayService = mediaPlayService;
@@ -46,6 +64,8 @@ public class MediaPlayControlFragment extends Fragment {
 
         initComponent(view);
         updateUI();
+
+        mIsDisplaying = true;
 
         return view;
     }
@@ -77,11 +97,13 @@ public class MediaPlayControlFragment extends Fragment {
         });
 
         mSeekBar = view.findViewById(R.id.play_seek_bar);
+
+        /*TuanTeo: Cập nhật tiến trình seekbar */
+        mSeekHandler.postDelayed(mUpdateSeekBar, 15);
+
         mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-                LogUtils.log("onProgressChanged progress " + progress);
-                mSeekBar.setProgress(progress);
                 if (fromUser) {
                     mMediaPlayService.getMediaPlayer().seekTo(progress);
                 }
@@ -99,6 +121,13 @@ public class MediaPlayControlFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        mIsDisplaying = false;
+    }
+
     /**
      * Hàm cập nhật lại giao diện MediaPlayControl
      */
@@ -114,5 +143,6 @@ public class MediaPlayControlFragment extends Fragment {
         }
 
         mSeekBar.setMax(mMediaPlayService.getCurrentPlaySong().getDuration());
+        mSeekBar.setProgress(mMediaPlayService.getMediaPlayer().getCurrentPosition());
     }
 }
