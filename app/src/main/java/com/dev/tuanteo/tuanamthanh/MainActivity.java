@@ -96,6 +96,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
             mSongNameController.setText(songName);
             mSingerNameController.setText(singerName);
+            if (mMediaService.isPlayingMusic()) {
+                mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);
+            } else {
+                mPlayPauseButtonController.setImageResource(R.drawable.ic_play_circle_controler);
+            }
 
             /*TuanTeo: Cập nhật cả UI trên MediaPlayControlFragment */
             if (mMediaPlayControlFragment != null) {

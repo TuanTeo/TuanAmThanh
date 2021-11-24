@@ -182,6 +182,7 @@ public class MediaPlayService extends Service {
         } else {
             resumeMusic();
         }
+        sendBroadcastUpdateUI();
     }
 
     /**
