@@ -25,6 +25,8 @@
             android:enabled="true"
             android:exported="false">
         </service>
+
+        <receiver android:name=".receiver.NotificationReceiver"/>
     </application>
 
 </manifest>

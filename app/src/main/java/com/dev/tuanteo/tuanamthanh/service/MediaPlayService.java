@@ -5,7 +5,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -19,6 +23,7 @@ import androidx.core.app.NotificationCompat;
 import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
 import com.dev.tuanteo.tuanamthanh.units.LocalSongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
@@ -40,11 +45,36 @@ public class MediaPlayService extends Service {
     private String mPlayingSongID;
     private String mPlayingSongPath;
 
+    /*TuanTeo: BroadcastReceiver lang nghe su kien cua Notification */
+    final private BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getStringExtra(Constant.NOTIFICATION_ACTION_NAME);
+
+            if (Constant.NOTIFICATION_PREVIOUS_ACTION.equals(action)) {
+                /*TuanTeo: Bam nut previous tren notification */
+                previousMusic();
+            } else if (Constant.NOTIFICATION_NEXT_ACTION.equals(action)) {
+                /*TuanTeo: Bam nut next tren notification */
+                nextMusic();
+            } else if (Constant.NOTIFICATION_PLAY_PAUSE_ACTION.equals(action)) {
+                /*TuanTeo: Bam nut play/pause tren notification */
+                pauseOrResumeMusic();
+            }
+
+            /*TuanTeo: Cap nhat lai giao dien Notificaton */
+            sendBroadcastUpdateUI();
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         LogUtils.log("MediaPlayService onCreate");
         new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
+
+        /*TuanTeo: Dang ky lang nghe su kien tu Notification */
+        registerReceiver(mNotificationReceiver, new IntentFilter(Constant.NOTIFICATION_ACTION));
     }
 
     @Override
@@ -59,22 +89,10 @@ public class MediaPlayService extends Service {
         /*TuanTeo: Tao Notification Channel */
         createNotificationChannel();
 
-        // TODO: 11/16/2021 Hien thi giao dien choi nhac khi click vao notification
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification notification = new NotificationCompat.Builder(getApplicationContext(), MEDIA_CHANNEL_ID)
-                .setContentTitle("Song Path "  + mPlayingSongPath)
-                .setContentText("Play song id " + mPlayingSongID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .build();
-
         /*TuanTeo: Start foreground service */
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, getMediaNotification());
 
+        /*TuanTeo: Choi nhac */
         playMusic();
 
         return START_NOT_STICKY;
@@ -123,6 +141,9 @@ public class MediaPlayService extends Service {
             mMediaPlayer.stop();
             mMediaPlayer.release();
         }
+
+        /*TuanTeo: Huy dang ky lang nghe su kien */
+        unregisterReceiver(mNotificationReceiver);
     }
 
     @Nullable
@@ -243,6 +264,9 @@ public class MediaPlayService extends Service {
                     break;
                 }
             }
+
+            /*TuanTeo: Cap nhat lai giao dien Notification */
+            updateNotificationUI();
         }).start();
     }
 
@@ -272,6 +296,76 @@ public class MediaPlayService extends Service {
         intent.putExtra(Constant.SINGER_NAME_TO_START_SERVICE, currentSong.getArtist());
 
         sendBroadcast(intent);
+
+        updateNotificationUI();
+    }
+
+    /**
+     * Cap nhat giao dien tren notification
+     */
+    private void updateNotificationUI() {
+        Notification notification = getMediaNotification();
+
+        NotificationManager notificationManager =
+                (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    private synchronized Notification getMediaNotification() {
+        /*TuanTeo: Cập nhật thông tin bài hát, trạng thái phát nhạc hiện tại */
+        int playPauseImageId;
+        String songName = "";
+        String singerName = "";
+        if (isPlayingMusic()) {
+            playPauseImageId = R.drawable.ic_notification_pause;
+        } else {
+            playPauseImageId = R.drawable.ic_notification_play;
+        }
+
+        try {
+            songName = getCurrentPlaySong().getName();
+            singerName = getCurrentPlaySong().getArtist();
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+        }
+
+        /*TuanTeo: Su kien khi click vào Notification */
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /*TuanTeo: Su kien cho nút previous trên Notification */
+        Intent previousIntent = new Intent(getApplicationContext(), NotificationReceiver.class)
+                .setAction(Constant.NOTIFICATION_PREVIOUS_ACTION);
+        PendingIntent previousPending = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /*TuanTeo: Su kien cho nút next trên Notification */
+        Intent nextIntent = new Intent(getApplicationContext(), NotificationReceiver.class)
+                .setAction(Constant.NOTIFICATION_NEXT_ACTION);
+        PendingIntent nextPending = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /*TuanTeo: Su kien cho nút pause/play trên Notification */
+        Intent playIntent = new Intent(getApplicationContext(), NotificationReceiver.class)
+                .setAction(Constant.NOTIFICATION_PLAY_PAUSE_ACTION);
+        PendingIntent playPending = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return new NotificationCompat.Builder(getApplicationContext(), MEDIA_CHANNEL_ID)
+                .setContentTitle(songName)
+                .setContentText(singerName)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.music_note))
+                .addAction(R.drawable.ic_notification_skip_previous, "Previous", previousPending) // #0
+                .addAction(playPauseImageId, "Pause", playPending) // #1
+                .addAction(R.drawable.ic_notification_skip_next, "Next", nextPending) // #2
+                .setContentIntent(pendingIntent)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2))
+                .build();
     }
 
 

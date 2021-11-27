@@ -39,7 +39,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation "androidx.media:media:1.4.3"
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')

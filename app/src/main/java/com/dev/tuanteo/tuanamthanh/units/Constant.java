@@ -9,4 +9,9 @@ public class Constant {
 
     /*TuanTeo: Action filter cho broadcast update Main UI */
     public static final String ACTION_UPDATE_UI = "action update ui";
+    public static final String NOTIFICATION_ACTION = "notification action";
+    public static final String NOTIFICATION_PREVIOUS_ACTION = "notification previous action";
+    public static final String NOTIFICATION_NEXT_ACTION = "notification next action";
+    public static final String NOTIFICATION_PLAY_PAUSE_ACTION = "notification play pause action";
+    public static final String NOTIFICATION_ACTION_NAME = "notification action name";
 }

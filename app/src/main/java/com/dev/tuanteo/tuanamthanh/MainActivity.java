@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         mMainViewPager = findViewById(R.id.view_pager);
         mMainViewPager.setAdapter(new MainPagerAdapter(this, listFragments));
         /*TuanTeo: Khong cho vuot de chuyen pager */
-        mMainViewPager.setUserInputEnabled(false);
+        mMainViewPager.setUserInputEnabled(true);
 
         mMainTabView = findViewById(R.id.tab_layout);
         new TabLayoutMediator(mMainTabView, mMainViewPager, (tab, position) -> {
