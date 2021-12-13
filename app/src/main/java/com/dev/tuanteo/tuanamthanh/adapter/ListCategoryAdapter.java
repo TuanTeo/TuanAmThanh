@@ -4,20 +4,35 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.object.Artist;
+import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
+import com.dev.tuanteo.tuanamthanh.object.Song;
 
-public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapter.ViewHolder> {
+import java.util.ArrayList;
 
-    private Context mContext;
+public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapter.ViewHolder>
+        implements IFirebaseListener {
+
+    private final Context mContext;
+    private ArrayList<MusicCategory> mListCategory = new ArrayList<>();
 
     @VisibleForTesting
     public ListCategoryAdapter(Context context) {
         mContext = context;
+
+        /*TuanTeo: Get all music category */
+        FirebaseFireStoreAPI.getListCategory(FirebaseFireStoreAPI.ALL_CATEGORY_DB, this);
     }
 
     @NonNull
@@ -30,18 +45,49 @@ public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapt
 
     @Override
     public void onBindViewHolder(@NonNull ListCategoryAdapter.ViewHolder holder, int position) {
-
+        holder.getNameCategory().setText(mListCategory.get(position).getName());
+        Glide.with(mContext).load(mListCategory.get(position).getAvatar()).into(holder.getAvatarCategory());
     }
 
     @Override
     public int getItemCount() {
-        return 20;
+        return mListCategory.size();
+    }
+
+    @Override
+    public void getListSongComplete(ArrayList<Song> listSong) {
+
+    }
+
+    @Override
+    public void getListCategoryComplete(ArrayList<MusicCategory> listCategory) {
+        mListCategory = listCategory;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void getListArtistComplete(ArrayList<Artist> listArtist) {
+
     }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView mAvatarCategory;
+        private final TextView mNameCategory;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            mAvatarCategory = itemView.findViewById(R.id.category_music_background);
+            mNameCategory = itemView.findViewById(R.id.category_music_name);
+        }
+
+        public ImageView getAvatarCategory() {
+            return mAvatarCategory;
+        }
+
+        public TextView getNameCategory() {
+            return mNameCategory;
         }
     }
 }

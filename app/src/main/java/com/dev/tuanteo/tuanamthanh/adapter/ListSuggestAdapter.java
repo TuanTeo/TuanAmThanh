@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.object.Artist;
+import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.util.ArrayList;
@@ -54,10 +56,20 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
     }
 
     @Override
-    public void updateComplete(ArrayList<Song> listSong) {
+    public void getListSongComplete(ArrayList<Song> listSong) {
         mListSuggestSong.clear();
         mListSuggestSong = listSong;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void getListCategoryComplete(ArrayList<MusicCategory> listCategory) {
+
+    }
+
+    @Override
+    public void getListArtistComplete(ArrayList<Artist> listArtist) {
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

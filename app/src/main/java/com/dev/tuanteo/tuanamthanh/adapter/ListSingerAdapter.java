@@ -4,18 +4,31 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.object.Artist;
+import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
+import com.dev.tuanteo.tuanamthanh.object.Song;
 
-public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.ViewHolder> {
+import java.util.ArrayList;
 
-    private Context mContext;
+public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.ViewHolder> implements IFirebaseListener {
+
+    private final Context mContext;
+    private ArrayList<Artist> mListArtist = new ArrayList<>();
 
     public ListSingerAdapter(Context context) {
         mContext = context;
+
+        FirebaseFireStoreAPI.getListArtist(null, this);
     }
 
     @NonNull
@@ -28,17 +41,48 @@ public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.V
 
     @Override
     public void onBindViewHolder(@NonNull ListSingerAdapter.ViewHolder holder, int position) {
-
+        holder.getArtistName().setText(mListArtist.get(position).getName());
+        Glide.with(mContext).load(mListArtist.get(position).getAvatar()).into(holder.getArtistAvatar());
     }
 
     @Override
     public int getItemCount() {
-        return 15;
+        return mListArtist.size();
+    }
+
+    @Override
+    public void getListSongComplete(ArrayList<Song> listSong) {
+
+    }
+
+    @Override
+    public void getListCategoryComplete(ArrayList<MusicCategory> listCategory) {
+
+    }
+
+    @Override
+    public void getListArtistComplete(ArrayList<Artist> listArtist) {
+        mListArtist = listArtist;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
+        private final ImageView mArtistAvatar;
+        private final TextView mArtistName;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            mArtistAvatar = itemView.findViewById(R.id.singer_music_background);
+            mArtistName = itemView.findViewById(R.id.music_singer_name);
+        }
+
+        public ImageView getArtistAvatar() {
+            return mArtistAvatar;
+        }
+
+        public TextView getArtistName() {
+            return mArtistName;
         }
     }
 }

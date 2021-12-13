@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TuanAmThanh</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="settings">Cài đặt</string>
+    <string name="category">Thể loai</string>
+    <string name="singer">Ca sỹ</string>
+    <string name="suggestion_text">Gợi ý</string>
+    <string name="play_random_text">Phát ngẫu nhiên</string>
+    <string name="list_song_text">Danh sách bài hát</string>
+</resources>

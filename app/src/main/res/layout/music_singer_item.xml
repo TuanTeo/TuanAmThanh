@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/singer"
+        android:textSize="13sp"
         android:marqueeRepeatLimit="marquee_forever"
         android:textColor="@android:color/black"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
