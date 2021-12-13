@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param song bài hát đang phát
      */
     private void updateUIMainPlayerController(Song song) {
+        // TODO: 11/28/2021 Cap nhat anh dai dien cua bai hat
         LogUtils.log("updateUIMainPlayerController " + song.getName());
         mSongNameController.setText(song.getName());
         mSingerNameController.setText(song.getArtist());

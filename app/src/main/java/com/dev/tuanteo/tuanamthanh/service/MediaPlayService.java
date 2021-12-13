@@ -354,6 +354,7 @@ public class MediaPlayService extends Service {
         PendingIntent playPending = PendingIntent.getBroadcast(getApplicationContext(), 0,
                 playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        // TODO: 11/28/2021 Cap nhat hinh dai dien cua bai hat
         return new NotificationCompat.Builder(getApplicationContext(), MEDIA_CHANNEL_ID)
                 .setContentTitle(songName)
                 .setContentText(singerName)

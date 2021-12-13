@@ -7,6 +7,15 @@ public class Song {
     private String artist; //singer
     private String path;
     private int mDuration;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getId() {
         return id;

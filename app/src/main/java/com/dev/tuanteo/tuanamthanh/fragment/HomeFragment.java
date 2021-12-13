@@ -16,12 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListCategoryAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.ListSingerAdapter;
+import com.dev.tuanteo.tuanamthanh.adapter.ListSuggestAdapter;
 
 public class HomeFragment extends Fragment {
 
     private Context mContext;
     private RecyclerView mCategoryRecyclerView;
     private RecyclerView mSingerRecyclerView;
+    private RecyclerView mSuggestRecyclerView;
 
     public HomeFragment(Context context) {
         this.mContext = context;
@@ -55,5 +57,11 @@ public class HomeFragment extends Fragment {
         mSingerRecyclerView = view.findViewById(R.id.singer_recycler_view);
         mSingerRecyclerView.setAdapter(new ListSingerAdapter(mContext));
         mSingerRecyclerView.setLayoutManager(singerLayoutManager);
+
+        LinearLayoutManager suggestLayoutManager
+                = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        mSuggestRecyclerView = view.findViewById(R.id.suggestion_recycler_view);
+        mSuggestRecyclerView.setAdapter(new ListSuggestAdapter(mContext));
+        mSuggestRecyclerView.setLayoutManager(suggestLayoutManager);
     }
 }
