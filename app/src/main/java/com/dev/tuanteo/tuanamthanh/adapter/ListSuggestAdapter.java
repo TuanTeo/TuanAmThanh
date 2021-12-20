@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
@@ -29,9 +30,11 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
     private Context mContext;
     private List<Song> mListSuggestSong = new ArrayList<>();
+    private static ILocalSongClickListener mListener;
 
-    public ListSuggestAdapter(Context context) {
+    public ListSuggestAdapter(Context context, ILocalSongClickListener listener) {
         mContext = context;
+        mListener = listener;
         /*TuanTeo: Lay du lieu tren Firebase */
         FirebaseFireStoreAPI.getListSong(FirebaseFireStoreAPI.ALL_SONG_DB, this);
     }
@@ -72,7 +75,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView mSongName;
         private TextView mSingerName;
@@ -83,6 +86,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
             mSongName = itemView.findViewById(R.id.local_song_name);
             mSingerName = itemView.findViewById(R.id.local_singer_name);
             mSongImageview = itemView.findViewById(R.id.local_song_image_view);
+            itemView.setOnClickListener(this);
         }
 
         public ImageView getSongImageview() {
@@ -95,6 +99,11 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
         public TextView getSingerName() {
             return mSingerName;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.playSong(mListSuggestSong.get(getAdapterPosition()));
         }
     }
 }

@@ -6,6 +6,7 @@ import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.units.Utils;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,9 +32,12 @@ public class FirebaseFireStoreAPI {
                     Log.d("getListSong", document.getId() + " => " + document.getData());
 
                     Song song = new Song();
+                    song.setId(document.getId());
                     song.setName(document.getString("name"));
                     song.setArtist(document.getString("singer"));
                     song.setImage(document.getString("artist_image"));
+                    song.setPath(document.getString("path"));
+                    song.setDuration(Utils.getSongDuration(song.getPath()));
 
                     listSuggestSong.add(song);
                 }

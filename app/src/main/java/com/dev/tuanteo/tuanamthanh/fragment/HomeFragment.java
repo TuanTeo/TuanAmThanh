@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListCategoryAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.ListSingerAdapter;
@@ -61,7 +62,7 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager suggestLayoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         mSuggestRecyclerView = view.findViewById(R.id.suggestion_recycler_view);
-        mSuggestRecyclerView.setAdapter(new ListSuggestAdapter(mContext));
+        mSuggestRecyclerView.setAdapter(new ListSuggestAdapter(mContext, (MainActivity) getActivity()));
         mSuggestRecyclerView.setLayoutManager(suggestLayoutManager);
     }
 }
