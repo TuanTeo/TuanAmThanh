@@ -22,8 +22,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private View mMainPlayerController;
     private TextView mSongNameController;
     private TextView mSingerNameController;
+    private ImageView mSongImageController;
     private ImageButton mPlayPauseButtonController;
     private ImageButton mPreviousButtonController;
     private ImageButton mNextButtonController;
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
             String songName = intent.getStringExtra(Constant.SONG_NAME_TO_START_SERVICE);
             String singerName = intent.getStringExtra(Constant.SINGER_NAME_TO_START_SERVICE);
+            String songImage = intent.getStringExtra(Constant.SONG_IMAGE_TO_START_SERVICE);
 
             mSongNameController.setText(songName);
             mSingerNameController.setText(singerName);
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             } else {
                 mPlayPauseButtonController.setImageResource(R.drawable.ic_play_circle_controler);
             }
+            Glide.with(getApplicationContext()).load(songImage).into(mSongImageController);
 
             /*TuanTeo: Cập nhật cả UI trên MediaPlayControlFragment */
             if (mMediaPlayControlFragment != null) {
@@ -166,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         mSongNameController.setSelected(true);
 
         mSingerNameController = findViewById(R.id.main_player_control_singer_name);
+
+        mSongImageController = findViewById(R.id.main_player_control_song_image);
 
         /*TuanTeo: Nut play/pause giao diện controller */
         mPlayPauseButtonController = findViewById(R.id.main_player_control_pause_button);
@@ -262,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     }
 
     @Override
-    public void playSong(Song song) {
+    public void playSong(Song song, boolean isOnline) {
         /*TuanTeo: Cập nhật UI trên giao diên điều khiển nhạc */
         updateUIMainPlayerController(song);
 
@@ -272,11 +279,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
 
             // TODO: 11/16/2021 Chạy foreground Servive choi nhac
-            startMediaPlayService(song.getId(), song.getPath());
+            startMediaPlayService(isOnline, song.getId(), song.getPath());
             bindMediaPlayService();
         } else {
             /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
-            mMediaService.playSong(song);
+            mMediaService.playSong(song, isOnline);
         }
     }
 
@@ -289,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         LogUtils.log("updateUIMainPlayerController " + song.getName());
         mSongNameController.setText(song.getName());
         mSingerNameController.setText(song.getArtist());
+        Glide.with(getApplicationContext()).load(song.getImage()).into(mSongImageController);
         mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);
     }
 
@@ -305,10 +313,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param songId        song id to start the first time
      * @param songPath      song path to start the first time
      */
-    private void startMediaPlayService(String songId, String songPath) {
+    private void startMediaPlayService(boolean isOnline, String songId, String songPath) {
         Intent serviceIntent = new Intent(this, MediaPlayService.class);
         serviceIntent.putExtra(Constant.SONG_ID_TO_START_SERVICE, songId);
         serviceIntent.putExtra(Constant.SONG_PATH_START_SERVICE, songPath);
+        serviceIntent.putExtra(Constant.IS_ONLINE_LIST, isOnline);
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 

@@ -6,6 +6,9 @@ public class Constant {
     public static final String SONG_ID_TO_START_SERVICE = "song id to start service";
     public static final String SINGER_NAME_TO_START_SERVICE = "singer name to start service";
     public static final String SONG_NAME_TO_START_SERVICE = "song name to start service";
+    public static final String SONG_IMAGE_TO_START_SERVICE = "song image to start service";
+    public static final String IS_ONLINE_LIST = "is online list";
+
 
     /*TuanTeo: Action filter cho broadcast update Main UI */
     public static final String ACTION_UPDATE_UI = "action update ui";

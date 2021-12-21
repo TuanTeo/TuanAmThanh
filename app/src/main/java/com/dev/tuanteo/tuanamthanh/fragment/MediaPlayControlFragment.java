@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
@@ -27,6 +29,7 @@ public class MediaPlayControlFragment extends Fragment {
     /*TuanTeo: Các phần tử của giao diện MediaPlayback */
     private TextView mSongNameTView;
     private TextView mSingerNameTView;
+    private ImageView mSongImage;
     private ImageButton mPlayPauseButton;
     private ImageButton mPreviousButton;
     private ImageButton mNextButton;
@@ -73,6 +76,8 @@ public class MediaPlayControlFragment extends Fragment {
     private void initComponent(View view) {
         mSongNameTView = view.findViewById(R.id.play_song_name);
         mSingerNameTView = view.findViewById(R.id.play_singer_name);
+
+        mSongImage = view.findViewById(R.id.play_album_image);
 
         mPlayPauseButton = view.findViewById(R.id.play_start_pause_button);
         mPlayPauseButton.setOnClickListener(v -> {
@@ -136,6 +141,8 @@ public class MediaPlayControlFragment extends Fragment {
 
         mSongNameTView.setText(song.getName());
         mSingerNameTView.setText(song.getArtist());
+        Glide.with(mContext).load(song.getImage()).into(mSongImage);
+        
         if (mMediaPlayService.isPlayingMusic()) {
             mPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_control);
         } else {

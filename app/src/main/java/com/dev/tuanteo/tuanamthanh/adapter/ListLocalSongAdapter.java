@@ -80,7 +80,7 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
 
         @Override
         public void onClick(View v) {
-            mListener.playSong(mListSong.get(getAdapterPosition()));
+            mListener.playSong(mListSong.get(getAdapterPosition()), false);
         }
 
         public ImageView getSongImageview() {

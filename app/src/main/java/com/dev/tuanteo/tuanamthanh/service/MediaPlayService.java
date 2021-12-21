@@ -22,6 +22,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.object.Artist;
+import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
@@ -31,7 +35,7 @@ import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MediaPlayService extends Service {
+public class MediaPlayService extends Service implements IFirebaseListener {
 
     private static final String MEDIA_CHANNEL_ID = "media channel id";
     private static final int NOTIFICATION_ID = 333;
@@ -44,6 +48,7 @@ public class MediaPlayService extends Service {
     private int mPlayIndex;
     private String mPlayingSongID;
     private String mPlayingSongPath;
+    private boolean mIsOnlineList;
 
     /*TuanTeo: BroadcastReceiver lang nghe su kien cua Notification */
     final private BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
@@ -83,6 +88,11 @@ public class MediaPlayService extends Service {
 
         mPlayingSongID = intent.getStringExtra(Constant.SONG_ID_TO_START_SERVICE);
         mPlayingSongPath = intent.getStringExtra(Constant.SONG_PATH_START_SERVICE);
+        mIsOnlineList = intent.getBooleanExtra(Constant.IS_ONLINE_LIST, false);
+
+        if (mIsOnlineList) {
+            FirebaseFireStoreAPI.getListSong(null, this);
+        }
 
         initComponent();
 
@@ -175,11 +185,23 @@ public class MediaPlayService extends Service {
      * Hàm phát 1 bài hát chỉ định
      * @param song bài hát chỉ định
      */
-    public void playSong(Song song) {
+    public void playSong(Song song, boolean isOnline) {
+        if (isOnline != mIsOnlineList) {
+            mIsOnlineList = isOnline;
+            updateListPlaySong();
+        }
         mPlayingSongID = song.getId();
         mPlayingSongPath = song.getPath();
         stopMusic();
         playMusic();
+    }
+
+    private void updateListPlaySong() {
+        if (mIsOnlineList) {
+            FirebaseFireStoreAPI.getListSong(null, this);
+        } else {
+            new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
+        }
     }
 
     /**
@@ -231,7 +253,7 @@ public class MediaPlayService extends Service {
         } else {
             ++mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex));
+        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList);
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -246,7 +268,7 @@ public class MediaPlayService extends Service {
         } else {
             --mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex));
+        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList);
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -294,6 +316,7 @@ public class MediaPlayService extends Service {
         Intent intent = new Intent(Constant.ACTION_UPDATE_UI);
         intent.putExtra(Constant.SONG_NAME_TO_START_SERVICE, currentSong.getName());
         intent.putExtra(Constant.SINGER_NAME_TO_START_SERVICE, currentSong.getArtist());
+        intent.putExtra(Constant.SONG_IMAGE_TO_START_SERVICE, currentSong.getImage());
 
         sendBroadcast(intent);
 
@@ -373,5 +396,20 @@ public class MediaPlayService extends Service {
     /*TuanTeo: Lấy biến MediaPlayer */
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
+    }
+
+    @Override
+    public void getListSongComplete(ArrayList<Song> listSong) {
+        mListPlaySong = listSong;
+    }
+
+    @Override
+    public void getListCategoryComplete(ArrayList<MusicCategory> listCategory) {
+
+    }
+
+    @Override
+    public void getListArtistComplete(ArrayList<Artist> listArtist) {
+
     }
 }

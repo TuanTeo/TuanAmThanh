@@ -103,7 +103,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
         @Override
         public void onClick(View v) {
-            mListener.playSong(mListSuggestSong.get(getAdapterPosition()));
+            mListener.playSong(mListSuggestSong.get(getAdapterPosition()), true);
         }
     }
 }
