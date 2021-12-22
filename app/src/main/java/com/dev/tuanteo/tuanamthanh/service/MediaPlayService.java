@@ -92,7 +92,7 @@ public class MediaPlayService extends Service implements IFirebaseListener {
         mIsOnlineList = intent.getBooleanExtra(Constant.IS_ONLINE_LIST, false);
 
         if (mIsOnlineList) {
-            FirebaseFireStoreAPI.getListSong(null, this);
+            FirebaseFireStoreAPI.getListSong(null, null, this);
         }
 
         initComponent();
@@ -199,7 +199,7 @@ public class MediaPlayService extends Service implements IFirebaseListener {
 
     private void updateListPlaySong() {
         if (mIsOnlineList) {
-            FirebaseFireStoreAPI.getListSong(null, this);
+            FirebaseFireStoreAPI.getListSong(null,null, this);
         } else {
             new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
         }

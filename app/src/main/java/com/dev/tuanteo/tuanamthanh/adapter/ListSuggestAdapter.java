@@ -36,7 +36,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
         mContext = context;
         mListener = listener;
         /*TuanTeo: Lay du lieu tren Firebase */
-        FirebaseFireStoreAPI.getListSong(FirebaseFireStoreAPI.ALL_SONG_DB, this);
+        FirebaseFireStoreAPI.getListSong(FirebaseFireStoreAPI.SONG_SUGGEST, "true", this);
     }
 
     @Override

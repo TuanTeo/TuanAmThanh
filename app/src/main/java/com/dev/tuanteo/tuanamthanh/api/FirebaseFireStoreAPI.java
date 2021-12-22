@@ -1,5 +1,6 @@
 package com.dev.tuanteo.tuanamthanh.api;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
@@ -7,7 +8,9 @@ import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -17,26 +20,49 @@ public class FirebaseFireStoreAPI {
     public static final String ALL_ARTIST_DB = "artist";
     public static final String ALL_CATEGORY_DB = "category";
 
+    //allSong DB
+    public static final String SONG_ARTIST_IMAGE = "artist_image";
+    public static final String SONG_CATEGORY = "category";
+    public static final String SONG_NAME = "name";
+    public static final String SONG_PATH = "path";
+    public static final String SONG_SINGER = "singer";
+    public static final String SONG_SUGGEST = "suggest";
+
+    //category Db
+    public static final String CATEGORY_NAME = "name";
+    public static final String CATEGORY_AVATAR = "avatar";
+
+    //artist Db
+    public static final String ARTIST_NAME = "name";
+    public static final String ARTIST_AVATAR = "avatar";
+
     /**
      * TuanTeo: Get all song from firebase
      * @return
      */
-    public static void getListSong(String Database, final IFirebaseListener listener) {
+    public static void getListSong(String value, String condition, final IFirebaseListener listener) {
         ArrayList<Song> listSuggestSong = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        //db.collection(Database).whereEqualTo("name", "Thiên hạ hữu tình nhân").get().addOnCompleteListener(task -> {
-        db.collection(ALL_SONG_DB).get().addOnCompleteListener(task -> {
+        CollectionReference collection = db.collection(ALL_SONG_DB);
+        Query query = collection;
+
+        if (!TextUtils.isEmpty(condition)) {
+            query = collection.whereEqualTo(value, condition);
+        }
+
+        //db.collection(ALL_SONG_DB).whereEqualTo("name", "Thiên hạ hữu tình nhân").get().addOnCompleteListener(task -> {
+        query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Log.d("getListSong", document.getId() + " => " + document.getData());
 
                     Song song = new Song();
                     song.setId(document.getId());
-                    song.setName(document.getString("name"));
-                    song.setArtist(document.getString("singer"));
-                    song.setImage(document.getString("artist_image"));
-                    song.setPath(document.getString("path"));
+                    song.setName(document.getString(SONG_NAME));
+                    song.setArtist(document.getString(SONG_SINGER));
+                    song.setImage(document.getString(SONG_ARTIST_IMAGE));
+                    song.setPath(document.getString(SONG_PATH));
 
                     listSuggestSong.add(song);
                 }
