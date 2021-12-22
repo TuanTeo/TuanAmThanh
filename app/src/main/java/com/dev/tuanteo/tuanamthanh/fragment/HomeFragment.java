@@ -42,8 +42,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    // TODO: 11/8/2021 Dang fake du lieu
-    @SuppressLint("VisibleForTests")
     private void initComponent(View view) {
         /*TuanTeo: Category RecyclerView */
         LinearLayoutManager categoryLayoutManager

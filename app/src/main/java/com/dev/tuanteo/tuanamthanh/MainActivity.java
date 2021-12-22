@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         /*TuanTeo: Khoi tao cac thanh phan cua view chinh */
         initComponent();
 
-        // TODO: 11/16/2021 Xu ly logic xin quyen hẳn hoi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
         }
@@ -187,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
         });
 
-        // TODO: 11/20/2021 Set sự kiện cho nút next prev
         mPreviousButtonController = findViewById(R.id.main_player_control_previous_button);
         mPreviousButtonController.setOnClickListener(view -> {
             mMediaService.previousMusic();
@@ -278,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 mMainPlayerController.setVisibility(View.VISIBLE);
             }
 
-            // TODO: 11/16/2021 Chạy foreground Servive choi nhac
             startMediaPlayService(isOnline, song.getId(), song.getPath());
             bindMediaPlayService();
         } else {
@@ -292,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param song bài hát đang phát
      */
     private void updateUIMainPlayerController(Song song) {
-        // TODO: 11/28/2021 Cap nhat anh dai dien cua bai hat
         LogUtils.log("updateUIMainPlayerController " + song.getName());
         mSongNameController.setText(song.getName());
         mSingerNameController.setText(song.getArtist());

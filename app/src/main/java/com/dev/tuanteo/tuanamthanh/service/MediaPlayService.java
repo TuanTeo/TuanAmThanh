@@ -31,6 +31,7 @@ import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
 import com.dev.tuanteo.tuanamthanh.units.LocalSongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
+import com.dev.tuanteo.tuanamthanh.units.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -208,7 +209,6 @@ public class MediaPlayService extends Service implements IFirebaseListener {
      * Tam dung phat nhac
      */
     private void stopMusic() {
-        // TODO: 11/18/2021 Stop bằng cách hay hơn
         LogUtils.log("MediaPlayService stopMusic");
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
@@ -401,6 +401,7 @@ public class MediaPlayService extends Service implements IFirebaseListener {
     @Override
     public void getListSongComplete(ArrayList<Song> listSong) {
         mListPlaySong = listSong;
+        Utils.updateDurationForListSong(mListPlaySong);
     }
 
     @Override

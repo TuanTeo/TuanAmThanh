@@ -37,7 +37,6 @@ public class FirebaseFireStoreAPI {
                     song.setArtist(document.getString("singer"));
                     song.setImage(document.getString("artist_image"));
                     song.setPath(document.getString("path"));
-                    song.setDuration(Utils.getSongDuration(song.getPath()));
 
                     listSuggestSong.add(song);
                 }
