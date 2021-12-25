@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
@@ -141,7 +142,10 @@ public class MediaPlayControlFragment extends Fragment {
 
         mSongNameTView.setText(song.getName());
         mSingerNameTView.setText(song.getArtist());
-        Glide.with(mContext).load(song.getImage()).into(mSongImage);
+        Glide.with(mContext)
+                .load(song.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(mSongImage);
         
         if (mMediaPlayService.isPlayingMusic()) {
             mPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_control);

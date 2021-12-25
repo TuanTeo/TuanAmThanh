@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
@@ -42,7 +43,10 @@ public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.V
     @Override
     public void onBindViewHolder(@NonNull ListSingerAdapter.ViewHolder holder, int position) {
         holder.getArtistName().setText(mListArtist.get(position).getName());
-        Glide.with(mContext).load(mListArtist.get(position).getAvatar()).into(holder.getArtistAvatar());
+        Glide.with(mContext)
+                .load(mListArtist.get(position).getAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(holder.getArtistAvatar());
     }
 
     @Override

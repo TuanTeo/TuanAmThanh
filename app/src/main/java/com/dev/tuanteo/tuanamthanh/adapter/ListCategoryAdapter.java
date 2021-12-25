@@ -12,8 +12,10 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.listener.RecyclerAdapterListener;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
@@ -26,10 +28,11 @@ public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapt
 
     private final Context mContext;
     private ArrayList<MusicCategory> mListCategory = new ArrayList<>();
+    private final RecyclerAdapterListener mListener;
 
-    @VisibleForTesting
-    public ListCategoryAdapter(Context context) {
+    public ListCategoryAdapter(Context context, RecyclerAdapterListener listener) {
         mContext = context;
+        mListener = listener;
 
         /*TuanTeo: Get all music category */
         FirebaseFireStoreAPI.getListCategory(FirebaseFireStoreAPI.ALL_CATEGORY_DB, this);
@@ -46,7 +49,14 @@ public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapt
     @Override
     public void onBindViewHolder(@NonNull ListCategoryAdapter.ViewHolder holder, int position) {
         holder.getNameCategory().setText(mListCategory.get(position).getName());
-        Glide.with(mContext).load(mListCategory.get(position).getAvatar()).into(holder.getAvatarCategory());
+        Glide.with(mContext)
+                .load(mListCategory.get(position).getAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(holder.getAvatarCategory());
+
+        holder.getAvatarCategory().setOnClickListener(view -> {
+            mListener.openListCategorySong(mListCategory.get(position).getName(), mListCategory.get(position).getAvatar());
+        });
     }
 
     @Override

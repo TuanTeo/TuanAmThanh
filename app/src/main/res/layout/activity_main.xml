@@ -144,6 +144,22 @@
         </com.google.android.material.tabs.TabLayout>
     </LinearLayout>
 
+    <!-- Hiển thị Fragment chứa bài hát của từng playlist theo thể loại, ca sĩ online -->
+    <FrameLayout
+        android:id="@+id/main_frame_container"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/bottom_main_view"
+        android:fitsSystemWindows="false"/>
+
     <FrameLayout
         android:id="@+id/main_frame_layout"
         android:layout_width="match_parent"

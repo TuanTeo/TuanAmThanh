@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
@@ -35,6 +36,16 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
     public ListSuggestAdapter(Context context, ILocalSongClickListener listener) {
         mContext = context;
         mListener = listener;
+        getAndUpdateListSong(null);
+    }
+
+    public ListSuggestAdapter(Context context, ILocalSongClickListener listener, String condition) {
+        mContext = context;
+        mListener = listener;
+        getAndUpdateListSong(condition);
+    }
+
+    protected void getAndUpdateListSong(String condition) {
         /*TuanTeo: Lay du lieu tren Firebase */
         FirebaseFireStoreAPI.getListSong(FirebaseFireStoreAPI.SONG_SUGGEST, "true", this);
     }
@@ -50,7 +61,10 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
     public void onBindViewHolder(@NonNull @Nonnull ViewHolder holder, int position) {
         holder.getSongName().setText(mListSuggestSong.get(position).getName());
         holder.getSingerName().setText(mListSuggestSong.get(position).getArtist());
-        Glide.with(mContext).load(mListSuggestSong.get(position).getImage()).into(holder.getSongImageview());
+        Glide.with(mContext)
+                .load(mListSuggestSong.get(position).getImage())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(holder.getSongImageview());
     }
 
     @Override

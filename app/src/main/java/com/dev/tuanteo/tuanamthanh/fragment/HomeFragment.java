@@ -1,6 +1,5 @@
 package com.dev.tuanteo.tuanamthanh.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,16 +17,21 @@ import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListCategoryAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.ListSingerAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.ListSuggestAdapter;
+import com.dev.tuanteo.tuanamthanh.listener.RecyclerAdapterListener;
+import com.dev.tuanteo.tuanamthanh.listener.HomeFragmentListener;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements RecyclerAdapterListener {
 
     private Context mContext;
     private RecyclerView mCategoryRecyclerView;
     private RecyclerView mSingerRecyclerView;
     private RecyclerView mSuggestRecyclerView;
 
-    public HomeFragment(Context context) {
+    private HomeFragmentListener mListener;
+
+    public HomeFragment(Context context, HomeFragmentListener listener) {
         this.mContext = context;
+        mListener = listener;
     }
 
     @Nullable
@@ -47,7 +51,7 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager categoryLayoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mCategoryRecyclerView = view.findViewById(R.id.category_recycler_view);
-        mCategoryRecyclerView.setAdapter(new ListCategoryAdapter(mContext));
+        mCategoryRecyclerView.setAdapter(new ListCategoryAdapter(mContext, this));
         mCategoryRecyclerView.setLayoutManager(categoryLayoutManager);
 
         /*TuanTeo: Singer RecyclerView */
@@ -62,5 +66,15 @@ public class HomeFragment extends Fragment {
         mSuggestRecyclerView = view.findViewById(R.id.suggestion_recycler_view);
         mSuggestRecyclerView.setAdapter(new ListSuggestAdapter(mContext, (MainActivity) getActivity()));
         mSuggestRecyclerView.setLayoutManager(suggestLayoutManager);
+    }
+
+    @Override
+    public void openListCategorySong(String category, String avatar) {
+        mListener.openCategoryFragmentDetail(category, avatar);
+    }
+
+    @Override
+    public void openListArtistSong(String singer, String avatar) {
+        mListener.openArtistFragmentDetail(singer, avatar);
     }
 }

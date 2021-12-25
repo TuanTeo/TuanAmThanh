@@ -24,12 +24,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
+import com.dev.tuanteo.tuanamthanh.fragment.DetailSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
+import com.dev.tuanteo.tuanamthanh.listener.HomeFragmentListener;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
@@ -42,7 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements ILocalSongClickListener {
+public class MainActivity extends AppCompatActivity implements ILocalSongClickListener,
+        HomeFragmentListener {
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
@@ -105,7 +110,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             } else {
                 mPlayPauseButtonController.setImageResource(R.drawable.ic_play_circle_controler);
             }
-            Glide.with(getApplicationContext()).load(songImage).into(mSongImageController);
+            Glide.with(getApplicationContext())
+                    .load(songImage)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(mSongImageController);
 
             /*TuanTeo: Cập nhật cả UI trên MediaPlayControlFragment */
             if (mMediaPlayControlFragment != null) {
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      */
     private List<Fragment> initListFragments() {
         List<Fragment> listFragment = new ArrayList<>();
-        listFragment.add(new HomeFragment(getApplicationContext()));
+        listFragment.add(new HomeFragment(getApplicationContext(), this));
         listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
         return listFragment;
     }
@@ -284,6 +292,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         }
     }
 
+    @Override
+    public void distroyDetailFragment() {
+        findViewById(R.id.main_frame_container).setVisibility(View.GONE);
+    }
+
     /**
      * Cập nhật giao diện điều khiển nhạc mini
      * @param song bài hát đang phát
@@ -292,7 +305,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         LogUtils.log("updateUIMainPlayerController " + song.getName());
         mSongNameController.setText(song.getName());
         mSingerNameController.setText(song.getArtist());
-        Glide.with(getApplicationContext()).load(song.getImage()).into(mSongImageController);
+        Glide.with(getApplicationContext())
+                .load(song.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(mSongImageController);
         mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);
     }
 
@@ -338,5 +354,28 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
         }
         return false;
+    }
+
+    @Override
+    public void openCategoryFragmentDetail(String category, String avatar) {
+
+        findViewById(R.id.main_frame_container).setVisibility(View.VISIBLE);
+
+        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(), category, avatar, this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_frame_container, detailSongFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void openArtistFragmentDetail(String singer, String avatar) {
+        findViewById(R.id.main_frame_container).setVisibility(View.VISIBLE);
+
+        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(), singer, avatar, this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_frame_container, detailSongFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
