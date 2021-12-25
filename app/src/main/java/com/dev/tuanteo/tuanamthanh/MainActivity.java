@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -244,6 +245,36 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        // TODO: 12/26/2021 Làm lại đoạn này
+        MenuItem myActionMenuItem = menu.findItem( R.id.app_bar_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+
+        findViewById(R.id.search_result_recycler_view).setOnTouchListener((v, event) -> true);
+
+
+        searchView.setOnSearchClickListener(v -> {
+            findViewById(R.id.search_result_recycler_view).setVisibility(View.VISIBLE);
+        });
+
+        searchView.setOnCloseListener(() -> {
+            findViewById(R.id.search_result_recycler_view).setVisibility(View.GONE);
+            return false;
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                myActionMenuItem.collapseActionView();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // TODO: 12/25/2021 hiển thị danh sách kết quả
+
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 

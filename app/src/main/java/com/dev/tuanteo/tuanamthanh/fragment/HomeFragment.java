@@ -3,6 +3,7 @@ package com.dev.tuanteo.tuanamthanh.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +20,8 @@ import com.dev.tuanteo.tuanamthanh.adapter.ListSingerAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.ListSuggestAdapter;
 import com.dev.tuanteo.tuanamthanh.listener.RecyclerAdapterListener;
 import com.dev.tuanteo.tuanamthanh.listener.HomeFragmentListener;
+
+import javax.annotation.Nonnull;
 
 public class HomeFragment extends Fragment implements RecyclerAdapterListener {
 
@@ -53,6 +56,28 @@ public class HomeFragment extends Fragment implements RecyclerAdapterListener {
         mCategoryRecyclerView = view.findViewById(R.id.category_recycler_view);
         mCategoryRecyclerView.setAdapter(new ListCategoryAdapter(mContext, this));
         mCategoryRecyclerView.setLayoutManager(categoryLayoutManager);
+        mCategoryRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                int action = e.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        rv.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull @Nonnull RecyclerView rv, @NonNull @Nonnull MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
 
         /*TuanTeo: Singer RecyclerView */
         LinearLayoutManager singerLayoutManager
@@ -60,12 +85,56 @@ public class HomeFragment extends Fragment implements RecyclerAdapterListener {
         mSingerRecyclerView = view.findViewById(R.id.singer_recycler_view);
         mSingerRecyclerView.setAdapter(new ListSingerAdapter(mContext, this));
         mSingerRecyclerView.setLayoutManager(singerLayoutManager);
+        mSingerRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                int action = e.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        rv.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull @Nonnull RecyclerView rv, @NonNull @Nonnull MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
 
         LinearLayoutManager suggestLayoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         mSuggestRecyclerView = view.findViewById(R.id.suggestion_recycler_view);
         mSuggestRecyclerView.setAdapter(new ListSuggestAdapter(mContext, (MainActivity) getActivity()));
         mSuggestRecyclerView.setLayoutManager(suggestLayoutManager);
+        mSuggestRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                int action = e.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        rv.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull @Nonnull RecyclerView rv, @NonNull @Nonnull MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
     }
 
     @Override
