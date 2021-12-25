@@ -35,7 +35,7 @@ public class ListCategoryAdapter extends  RecyclerView.Adapter<ListCategoryAdapt
         mListener = listener;
 
         /*TuanTeo: Get all music category */
-        FirebaseFireStoreAPI.getListCategory(FirebaseFireStoreAPI.ALL_CATEGORY_DB, this);
+        FirebaseFireStoreAPI.getListCategory(this);
     }
 
     @NonNull

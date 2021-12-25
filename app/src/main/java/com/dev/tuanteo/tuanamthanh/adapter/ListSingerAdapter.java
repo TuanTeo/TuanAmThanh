@@ -31,7 +31,7 @@ public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.V
     public ListSingerAdapter(Context context, RecyclerAdapterListener listener) {
         mContext = context;
         mListener = listener;
-        FirebaseFireStoreAPI.getListArtist(null, this);
+        FirebaseFireStoreAPI.getListArtist(this);
     }
 
     @NonNull

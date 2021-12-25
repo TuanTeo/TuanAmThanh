@@ -36,6 +36,10 @@ public class FirebaseFireStoreAPI {
     public static final String ARTIST_NAME = "name";
     public static final String ARTIST_AVATAR = "avatar";
 
+    /*TuanTeo: Cache danh sách bài hát */
+    private static ArrayList<Song> mListFindSong;
+    private static ArrayList<Song> mListSuggestSong;
+
     /**
      * TuanTeo: Get all song from firebase
      * @return
@@ -69,6 +73,13 @@ public class FirebaseFireStoreAPI {
 
                 /*TuanTeo: notify about update complete */
                 listener.getListSongComplete(listSuggestSong);
+
+                if (value.equals(SONG_SUGGEST)) {
+                    mListSuggestSong = listSuggestSong;
+                } else {
+                    /*TuanTeo: Cache lại danh sách bài hát đang hiển thị */
+                    mListFindSong = listSuggestSong;
+                }
             } else {
                 Log.d("FirebaseFirestore", "Error getting document ", task.getException());
             }
@@ -76,7 +87,7 @@ public class FirebaseFireStoreAPI {
 
     }
 
-    public static void getListCategory(String query, IFirebaseListener listener) {
+    public static void getListCategory(IFirebaseListener listener) {
         ArrayList<MusicCategory> listCategory = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -100,7 +111,7 @@ public class FirebaseFireStoreAPI {
         });
     }
 
-    public static void getListArtist(String query, IFirebaseListener listener) {
+    public static void getListArtist(IFirebaseListener listener) {
         ArrayList<Artist> listArtist = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -122,5 +133,16 @@ public class FirebaseFireStoreAPI {
                 Log.d("FirebaseFirestore", "Error getting document ", task.getException());
             }
         });
+    }
+
+    public static ArrayList<Song> getListSuggestSong() {
+        return mListSuggestSong;
+    }
+
+    public static ArrayList<Song> getListFindSong() {
+        if (mListFindSong == null) {
+            return getListSuggestSong();
+        }
+        return mListFindSong;
     }
 }

@@ -26,17 +26,19 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.ViewHolder>
-    implements IFirebaseListener
-{
+    implements IFirebaseListener {
 
     private Context mContext;
     private List<Song> mListSuggestSong = new ArrayList<>();
     private static ILocalSongClickListener mListener;
 
+    private boolean mIsSuggest;
+
     public ListSuggestAdapter(Context context, ILocalSongClickListener listener) {
         mContext = context;
         mListener = listener;
         getAndUpdateListSong(null);
+        mIsSuggest = true;
     }
 
     public ListSuggestAdapter(Context context, ILocalSongClickListener listener, String condition) {
@@ -117,7 +119,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
         @Override
         public void onClick(View v) {
-            mListener.playSong(mListSuggestSong.get(getAdapterPosition()), true);
+            mListener.playSong(mListSuggestSong.get(getAdapterPosition()), true, mIsSuggest);
         }
     }
 }

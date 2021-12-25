@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     }
 
     @Override
-    public void playSong(Song song, boolean isOnline) {
+    public void playSong(Song song, boolean isOnline, boolean isSuggestList) {
         /*TuanTeo: Cập nhật UI trên giao diên điều khiển nhạc */
         updateUIMainPlayerController(song);
 
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             bindMediaPlayService();
         } else {
             /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
-            mMediaService.playSong(song, isOnline);
+            mMediaService.playSong(song, isOnline, true, isSuggestList);
         }
     }
 

@@ -36,7 +36,7 @@ import com.dev.tuanteo.tuanamthanh.units.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MediaPlayService extends Service implements IFirebaseListener {
+public class MediaPlayService extends Service {
 
     private static final String MEDIA_CHANNEL_ID = "media channel id";
     private static final int NOTIFICATION_ID = 333;
@@ -77,7 +77,6 @@ public class MediaPlayService extends Service implements IFirebaseListener {
     public void onCreate() {
         super.onCreate();
         LogUtils.log("MediaPlayService onCreate");
-        new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
 
         /*TuanTeo: Dang ky lang nghe su kien tu Notification */
         registerReceiver(mNotificationReceiver, new IntentFilter(Constant.NOTIFICATION_ACTION));
@@ -91,8 +90,12 @@ public class MediaPlayService extends Service implements IFirebaseListener {
         mPlayingSongPath = intent.getStringExtra(Constant.SONG_PATH_START_SERVICE);
         mIsOnlineList = intent.getBooleanExtra(Constant.IS_ONLINE_LIST, false);
 
+        /*TuanTeo: Khởi tạo danh sách bài hát ban đầu */
         if (mIsOnlineList) {
-            FirebaseFireStoreAPI.getListSong(null, null, this);
+            mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
+            Utils.updateDurationForListSong(mListPlaySong);
+        } else {
+            new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
         }
 
         initComponent();
@@ -186,10 +189,11 @@ public class MediaPlayService extends Service implements IFirebaseListener {
      * Hàm phát 1 bài hát chỉ định
      * @param song bài hát chỉ định
      */
-    public void playSong(Song song, boolean isOnline) {
-        if (isOnline != mIsOnlineList) {
+    public void playSong(Song song, boolean isOnline, boolean isNeedUpdate, boolean isSuggestList) {
+        /*TuanTeo: Cập nhật lại danh sách bài hát nếu cần */
+        if (isNeedUpdate) {
             mIsOnlineList = isOnline;
-            updateListPlaySong();
+            updateListPlaySong(isSuggestList);
         }
         mPlayingSongID = song.getId();
         mPlayingSongPath = song.getPath();
@@ -197,9 +201,18 @@ public class MediaPlayService extends Service implements IFirebaseListener {
         playMusic();
     }
 
-    private void updateListPlaySong() {
+    /**
+     * Cập nhật lại danh sách bài hát tương ứng
+     * @param isSuggestList     kiểm tra có phải danh sách bài hát gợi ý không
+     */
+    private void updateListPlaySong(boolean isSuggestList) {
         if (mIsOnlineList) {
-            FirebaseFireStoreAPI.getListSong(null,null, this);
+            if (isSuggestList) {
+                mListPlaySong = FirebaseFireStoreAPI.getListSuggestSong();
+            } else {
+                mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
+            }
+            Utils.updateDurationForListSong(mListPlaySong);
         } else {
             new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
         }
@@ -253,7 +266,7 @@ public class MediaPlayService extends Service implements IFirebaseListener {
         } else {
             ++mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList);
+        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList,false, false);
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -268,7 +281,7 @@ public class MediaPlayService extends Service implements IFirebaseListener {
         } else {
             --mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList);
+        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -396,21 +409,5 @@ public class MediaPlayService extends Service implements IFirebaseListener {
     /*TuanTeo: Lấy biến MediaPlayer */
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
-    }
-
-    @Override
-    public void getListSongComplete(ArrayList<Song> listSong) {
-        mListPlaySong = listSong;
-        Utils.updateDurationForListSong(mListPlaySong);
-    }
-
-    @Override
-    public void getListCategoryComplete(ArrayList<MusicCategory> listCategory) {
-
-    }
-
-    @Override
-    public void getListArtistComplete(ArrayList<Artist> listArtist) {
-
     }
 }
