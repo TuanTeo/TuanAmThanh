@@ -5,9 +5,9 @@ import android.content.Context;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 
-public class ListDetailAdapter extends ListSuggestAdapter {
+public class ListDetailCategoryAdapter extends ListSuggestAdapter {
 
-    public ListDetailAdapter(Context context, ILocalSongClickListener listener, String category) {
+    public ListDetailCategoryAdapter(Context context, ILocalSongClickListener listener, String category) {
         super(context, listener, category);
     }
 

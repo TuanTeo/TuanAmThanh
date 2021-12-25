@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements RecyclerAdapterListener {
         LinearLayoutManager singerLayoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mSingerRecyclerView = view.findViewById(R.id.singer_recycler_view);
-        mSingerRecyclerView.setAdapter(new ListSingerAdapter(mContext));
+        mSingerRecyclerView.setAdapter(new ListSingerAdapter(mContext, this));
         mSingerRecyclerView.setLayoutManager(singerLayoutManager);
 
         LinearLayoutManager suggestLayoutManager

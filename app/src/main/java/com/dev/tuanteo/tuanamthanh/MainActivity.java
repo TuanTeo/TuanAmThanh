@@ -361,7 +361,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
         findViewById(R.id.main_frame_container).setVisibility(View.VISIBLE);
 
-        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(), category, avatar, this);
+        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(),
+                category, avatar, this, DetailSongFragment.DETAIL_CATEGORY_TYPE);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_frame_container, detailSongFragment)
                 .addToBackStack(null)
@@ -372,7 +373,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     public void openArtistFragmentDetail(String singer, String avatar) {
         findViewById(R.id.main_frame_container).setVisibility(View.VISIBLE);
 
-        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(), singer, avatar, this);
+        DetailSongFragment detailSongFragment = new DetailSongFragment(getApplicationContext(),
+                singer, avatar, this, DetailSongFragment.DETAIL_SINGER_TYPE);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_frame_container, detailSongFragment)
                 .addToBackStack(null)

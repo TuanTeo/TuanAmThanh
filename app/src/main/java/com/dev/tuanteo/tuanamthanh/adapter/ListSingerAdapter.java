@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
+import com.dev.tuanteo.tuanamthanh.listener.RecyclerAdapterListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
@@ -25,10 +26,11 @@ public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.V
 
     private final Context mContext;
     private ArrayList<Artist> mListArtist = new ArrayList<>();
+    private RecyclerAdapterListener mListener;
 
-    public ListSingerAdapter(Context context) {
+    public ListSingerAdapter(Context context, RecyclerAdapterListener listener) {
         mContext = context;
-
+        mListener = listener;
         FirebaseFireStoreAPI.getListArtist(null, this);
     }
 
@@ -47,6 +49,11 @@ public class ListSingerAdapter extends  RecyclerView.Adapter<ListSingerAdapter.V
                 .load(mListArtist.get(position).getAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(holder.getArtistAvatar());
+
+        holder.getArtistAvatar().setOnClickListener(view -> {
+            mListener.openListArtistSong(mListArtist.get(position).getName(),
+                    mListArtist.get(position).getAvatar());
+        });
     }
 
     @Override
