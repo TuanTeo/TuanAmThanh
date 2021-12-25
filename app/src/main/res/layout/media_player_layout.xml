@@ -10,17 +10,20 @@
 
     <ImageButton
         android:id="@+id/play_start_pause_button"
-        android:layout_width="67dp"
-        android:layout_height="67dp"
-        android:layout_marginBottom="30dp"
-        android:scaleType="fitCenter"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="@android:color/transparent"
+        android:backgroundTintMode="screen"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_pause_circle_control"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/play_album_image"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/play_album_image" />
 
     <ImageButton
+        android:visibility="invisible"
         android:id="@+id/play_random_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,9 +35,11 @@
 
     <ImageButton
         android:id="@+id/play_previous_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_navigate_before_control"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@android:color/transparent"
+        android:backgroundTintMode="screen"
+        android:src="@drawable/ic_control_skip_previous"
         app:layout_constraintBottom_toBottomOf="@+id/play_start_pause_button"
         app:layout_constraintStart_toEndOf="@+id/play_random_button"
         app:layout_constraintEnd_toStartOf="@+id/play_start_pause_button"
@@ -42,15 +47,18 @@
 
     <ImageButton
         android:id="@+id/play_next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_navigate_next_control"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@android:color/transparent"
+        android:backgroundTintMode="screen"
+        android:src="@drawable/ic_control_skip_next"
         app:layout_constraintBottom_toBottomOf="@+id/play_start_pause_button"
         app:layout_constraintStart_toEndOf="@+id/play_start_pause_button"
         app:layout_constraintEnd_toStartOf="@+id/play_repeat_button"
         app:layout_constraintTop_toTopOf="@+id/play_start_pause_button" />
 
     <ImageButton
+        android:visibility="invisible"
         android:id="@+id/play_repeat_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
