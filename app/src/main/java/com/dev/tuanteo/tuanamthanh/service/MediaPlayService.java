@@ -276,7 +276,9 @@ public class MediaPlayService extends Service {
      * Lùi bài hát
      */
     public void previousMusic() {
-        if (mPlayIndex == 0) {
+        /*TuanTeo: Logic nghe lại bài hát nếu thích */
+        if (mMediaPlayer.getCurrentPosition() > 3000) {
+        } else if (mPlayIndex == 0) {
             mPlayIndex = mListPlaySong.size() - 1;
         } else {
             --mPlayIndex;
