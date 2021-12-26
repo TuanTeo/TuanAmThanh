@@ -255,10 +255,18 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
         searchView.setOnSearchClickListener(v -> {
             findViewById(R.id.search_result_recycler_view).setVisibility(View.VISIBLE);
+
+            /*TuanTeo: Ẩn controller */
+            mMainPlayerController.setVisibility(View.GONE);
+            mMainTabView.setVisibility(View.GONE);
         });
 
         searchView.setOnCloseListener(() -> {
             findViewById(R.id.search_result_recycler_view).setVisibility(View.GONE);
+
+            /*TuanTeo: Hiển thị lại controller */
+            mMainPlayerController.setVisibility(View.VISIBLE);
+            mMainTabView.setVisibility(View.VISIBLE);
             return false;
         });
 
