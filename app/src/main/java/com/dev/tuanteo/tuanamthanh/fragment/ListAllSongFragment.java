@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListLocalSongAdapter;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
-import com.dev.tuanteo.tuanamthanh.units.LocalSongUtils;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
 public class ListAllSongFragment extends Fragment {
 
@@ -44,7 +44,7 @@ public class ListAllSongFragment extends Fragment {
     private void initViewComponent(View view) {
         mListSongRecyclerView = view.findViewById(R.id.list_all_song_recycler_view);
         ListLocalSongAdapter localSongAdapter = new ListLocalSongAdapter(mContext,
-                    LocalSongUtils.getListLocalSong(mContext), mItemClickListener);
+                    SongUtils.getListLocalSong(mContext), mItemClickListener);
         mListSongRecyclerView.setAdapter(localSongAdapter);
         mListSongRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }

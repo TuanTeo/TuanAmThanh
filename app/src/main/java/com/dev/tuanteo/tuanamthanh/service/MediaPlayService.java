@@ -23,13 +23,10 @@ import androidx.core.app.NotificationCompat;
 import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
-import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
-import com.dev.tuanteo.tuanamthanh.object.Artist;
-import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
-import com.dev.tuanteo.tuanamthanh.units.LocalSongUtils;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 
@@ -95,7 +92,7 @@ public class MediaPlayService extends Service {
             mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
             Utils.updateDurationForListSong(mListPlaySong);
         } else {
-            new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
+            new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
         }
 
         initComponent();
@@ -214,7 +211,7 @@ public class MediaPlayService extends Service {
             }
             Utils.updateDurationForListSong(mListPlaySong);
         } else {
-            new Thread(() -> mListPlaySong = LocalSongUtils.getListLocalSong(getApplicationContext())).start();
+            new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
         }
     }
 

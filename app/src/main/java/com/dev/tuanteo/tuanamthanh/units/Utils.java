@@ -14,12 +14,22 @@ public class Utils {
      * @return
      */
     public static int getSongDuration(String url) {
+        int count = 0;
         if (url != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(url);
-            String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long timeInmillisec = Long.parseLong(time);
-            return (int) timeInmillisec;
+            try {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(url);
+                String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                long timeInmillisec = Long.parseLong(time);
+                return (int) timeInmillisec;
+            } catch (RuntimeException e) {
+                count++;
+                if (count < 4) {
+                    return getSongDuration(url);
+                } else {
+                    return 0;
+                }
+            }
         } else {
             return 0;
         }

@@ -6,12 +6,13 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class LocalSongUtils {
+public class SongUtils {
 
     public static final ArrayList<Song> getListLocalSong(Context context) {
         WeakReference<Context> contextWeakReference = new WeakReference<>(context);
@@ -68,5 +69,18 @@ public class LocalSongUtils {
             c.close();
         }
         return tempAudioList;
+    }
+
+    public static final ArrayList<Song> getListAllSong(Context context) {
+        WeakReference<Context> contextWeakReference = new WeakReference<>(context);
+
+        ArrayList<Song> allSongList = new ArrayList<>();
+        ArrayList<Song> localSongList = getListLocalSong(contextWeakReference.get());
+        ArrayList<Song> onlineSongList = FirebaseFireStoreAPI.getListAllSong();
+
+        allSongList.addAll(localSongList);
+        allSongList.addAll(onlineSongList);
+
+        return allSongList;
     }
 }

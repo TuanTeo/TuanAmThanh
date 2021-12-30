@@ -37,6 +37,7 @@ public class FirebaseFireStoreAPI {
     public static final String ARTIST_AVATAR = "avatar";
 
     /*TuanTeo: Cache danh sách bài hát */
+    private static ArrayList<Song> mListAllSong;
     private static ArrayList<Song> mListFindSong;
     private static ArrayList<Song> mListSuggestSong;
 
@@ -135,6 +136,44 @@ public class FirebaseFireStoreAPI {
         });
     }
 
+    /**
+     * TuanTeo: Get all song from firebase
+     * @return
+     */
+    public static void loadListAllSong() {
+        new Thread(() -> {
+            ArrayList<Song> listSuggestSong = new ArrayList<>();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            CollectionReference collection = db.collection(ALL_SONG_DB);
+            Query query = collection;
+
+            //db.collection(ALL_SONG_DB).whereEqualTo("name", "Thiên hạ hữu tình nhân").get().addOnCompleteListener(task -> {
+            query.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("getListSong", document.getId() + " => " + document.getData());
+
+                        Song song = new Song();
+                        song.setId(document.getId());
+                        song.setName(document.getString(SONG_NAME));
+                        song.setArtist(document.getString(SONG_SINGER));
+                        song.setImage(document.getString(SONG_ARTIST_IMAGE));
+                        song.setPath(document.getString(SONG_PATH));
+
+                        listSuggestSong.add(song);
+                    }
+
+                    mListAllSong = listSuggestSong;
+//                    Utils.updateDurationForListSong(mListAllSong);
+                    Log.d("FirebaseFirestore", "Load All Song Completed!", task.getException());
+                } else {
+                    Log.d("FirebaseFirestore", "Error getting document ", task.getException());
+                }
+            });
+        }).start();
+    }
+
     public static ArrayList<Song> getListSuggestSong() {
         return mListSuggestSong;
     }
@@ -144,5 +183,9 @@ public class FirebaseFireStoreAPI {
             return getListSuggestSong();
         }
         return mListFindSong;
+    }
+
+    public static ArrayList<Song> getListAllSong() {
+        return mListAllSong;
     }
 }

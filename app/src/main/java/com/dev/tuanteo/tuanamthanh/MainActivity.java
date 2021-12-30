@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -18,6 +21,7 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +34,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
+import com.dev.tuanteo.tuanamthanh.adapter.SearchAdapter;
+import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.fragment.DetailSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
@@ -40,6 +46,7 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -138,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
         }
+
+        /*TuanTeo: Load danh sách tất cả bài hát online */
+        FirebaseFireStoreAPI.loadListAllSong();
     }
 
     private void initComponent() {
@@ -242,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 .commit();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -249,12 +260,15 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         // TODO: 12/26/2021 Làm lại đoạn này
         MenuItem myActionMenuItem = menu.findItem( R.id.app_bar_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        RecyclerView searchRV = findViewById(R.id.search_result_recycler_view);
+        searchRV.setOnTouchListener((v, event) -> true);
 
-        findViewById(R.id.search_result_recycler_view).setOnTouchListener((v, event) -> true);
-
+        SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), new ArrayList<>(), this);
+        searchRV.setAdapter(searchAdapter);
+        searchRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         searchView.setOnSearchClickListener(v -> {
-            findViewById(R.id.search_result_recycler_view).setVisibility(View.VISIBLE);
+            searchRV.setVisibility(View.VISIBLE);
 
             /*TuanTeo: Ẩn controller */
             mMainPlayerController.setVisibility(View.GONE);
@@ -262,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         });
 
         searchView.setOnCloseListener(() -> {
-            findViewById(R.id.search_result_recycler_view).setVisibility(View.GONE);
+            searchRV.setVisibility(View.GONE);
 
             /*TuanTeo: Hiển thị lại controller */
             mMainPlayerController.setVisibility(View.VISIBLE);
@@ -277,8 +291,23 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 return false;
             }
             @Override
-            public boolean onQueryTextChange(String s) {
+            public boolean onQueryTextChange(String newText) {
                 // TODO: 12/25/2021 hiển thị danh sách kết quả
+                newText = newText.toLowerCase();
+
+                ArrayList<Song> resultList = new ArrayList<>();
+
+                if (!TextUtils.isEmpty(newText)) {
+                    for (Song song : SongUtils.getListAllSong(getApplicationContext())) {
+                        String title = song.getName().toLowerCase();
+                        if (title.contains(newText)) {
+                            resultList.add(song);
+                        }
+                    }
+                }
+
+                searchAdapter.setListSong(resultList);
+                searchAdapter.notifyDataSetChanged();
 
                 return false;
             }
