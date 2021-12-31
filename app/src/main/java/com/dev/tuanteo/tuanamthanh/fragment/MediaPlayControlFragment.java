@@ -35,9 +35,14 @@ public class MediaPlayControlFragment extends Fragment {
     private ImageButton mPreviousButton;
     private ImageButton mNextButton;
     private CircularSeekBar mSeekBar;
+    private ImageView mNavigateBackButton;
+    private ImageView mFavoriteButton;
 
     /*TuanTeo: bien luu trang thai dang hien thi cua fragment */
     private boolean mIsDisplaying;
+
+    /*TuanTeo: luu trang thai nhac yeu thich */
+    private boolean mIsFavorite;
 
     /*TuanTeo: Dung de cap nhat lai tien trinh seekbar */
     private final Handler mSeekHandler = new Handler();
@@ -123,6 +128,23 @@ public class MediaPlayControlFragment extends Fragment {
             @Override
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
 
+            }
+        });
+
+        mNavigateBackButton = view.findViewById(R.id.navigation_back_button);
+        mNavigateBackButton.setOnClickListener(v -> {
+            requireActivity().onBackPressed();
+        });
+
+        mFavoriteButton = view.findViewById(R.id.favorite_button);
+        mFavoriteButton.setOnClickListener(v -> {
+            // TODO: 12/31/2021 Them logic danh sach yeu thich
+            if (mIsFavorite) {
+                mIsFavorite = false;
+                mFavoriteButton.setImageResource(R.drawable.ic_favorite_border);
+            } else {
+                mIsFavorite = true;
+                mFavoriteButton.setImageResource(R.drawable.ic_favorited);
             }
         });
     }
