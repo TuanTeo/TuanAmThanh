@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,31 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
 //                holder.getSongImageview().setImageResource(R.drawable.song_image);
 //            }
         }
+
+        holder.getMenuImageView().setOnClickListener(v -> {
+            //creating a popup menu
+            PopupMenu popup = new PopupMenu(mContext, holder.mMenuImageView);
+            //inflating menu from xml resource
+            popup.inflate(R.menu.song_options_menu);
+            //adding click listener
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.play_song_action:
+                        mListener.playSong(mListSong.get(position), false, false);
+                        return true;
+                    case R.id.delete_song_action:
+                        // TODO: 12/31/2021 them logic xoa bai hat
+                        return true;
+                    case R.id.favorite_song_action:
+                        // TODO: 12/31/2021 them logic bai hat yeu thich
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+            //displaying the popup
+            popup.show();
+        });
     }
 
     @Override
@@ -69,12 +95,14 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         private TextView mSongName;
         private TextView mSingerName;
         private ImageView mSongImageview;
+        private ImageView mMenuImageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mSongName = itemView.findViewById(R.id.local_song_name);
             mSingerName = itemView.findViewById(R.id.local_singer_name);
             mSongImageview = itemView.findViewById(R.id.local_song_image_view);
+            mMenuImageView = itemView.findViewById(R.id.local_song_more_menu);
             itemView.setOnClickListener(this);
         }
 
@@ -91,6 +119,10 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         }
         public TextView getSingerName() {
             return mSingerName;
+        }
+
+        public ImageView getMenuImageView() {
+            return mMenuImageView;
         }
     }
 

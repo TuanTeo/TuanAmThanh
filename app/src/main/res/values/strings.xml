@@ -66,4 +66,7 @@ However, if you want to modify a path relative to the motion, for example make i
     <string name="singer_image">singer image</string>
     <string name="default_current_time">00:00</string>
     <string name="default_total_time">03:24</string>
+    <string name="play">Play</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="delete">Delete</string>
 </resources>

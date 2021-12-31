@@ -8,4 +8,7 @@
     <string name="suggestion_text">Gợi ý</string>
     <string name="play_random_text">Phát ngẫu nhiên</string>
     <string name="list_song_text">Danh sách bài hát</string>
+    <string name="play">Phát</string>
+    <string name="add_to_favorite">Thêm vào danh sách yêu thích</string>
+    <string name="delete">Xóa</string>
 </resources>
