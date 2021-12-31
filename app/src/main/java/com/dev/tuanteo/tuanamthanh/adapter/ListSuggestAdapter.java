@@ -29,7 +29,7 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
     implements IFirebaseListener {
 
     private Context mContext;
-    private List<Song> mListSuggestSong = new ArrayList<>();
+    protected List<Song> mListSuggestSong = new ArrayList<>();
     private static ILocalSongClickListener mListener;
 
     private boolean mIsSuggest;

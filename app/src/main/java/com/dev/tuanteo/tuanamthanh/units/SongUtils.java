@@ -11,6 +11,7 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SongUtils {
 
@@ -82,5 +83,22 @@ public class SongUtils {
         allSongList.addAll(onlineSongList);
 
         return allSongList;
+    }
+
+    /**
+     * Get list bài hát theo tên ca sĩ
+     * @param singer
+     * @return
+     */
+    public static List<Song> getListArtistSong(String singer) {
+        ArrayList<Song> artistSongList = new ArrayList<>();
+
+        for (Song song : FirebaseFireStoreAPI.getListAllSong()) {
+            if (song.getArtist().contains(singer)) {
+                artistSongList.add(song);
+            }
+        }
+
+        return artistSongList;
     }
 }

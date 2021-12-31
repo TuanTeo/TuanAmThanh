@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
 public class ListDetailSingerAdapter extends ListSuggestAdapter {
 
@@ -13,6 +14,7 @@ public class ListDetailSingerAdapter extends ListSuggestAdapter {
 
     @Override
     protected void getAndUpdateListSong(String condition) {
-        FirebaseFireStoreAPI.getListSong(FirebaseFireStoreAPI.SONG_SINGER, condition, this);
+        mListSuggestSong = SongUtils.getListArtistSong(condition);
+        notifyDataSetChanged();
     }
 }
