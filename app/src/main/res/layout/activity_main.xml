@@ -49,7 +49,9 @@
                 android:visibility="gone"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="#A9595959"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/blur_backgroundr"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </RelativeLayout>

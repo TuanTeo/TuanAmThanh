@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
             Glide.with(getApplicationContext())
                     .load(songImage)
+                    .placeholder(R.drawable.music_note)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(mSongImageController);
 
@@ -261,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         MenuItem myActionMenuItem = menu.findItem( R.id.app_bar_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         RecyclerView searchRV = findViewById(R.id.search_result_recycler_view);
-        searchRV.setOnTouchListener((v, event) -> true);
 
         SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), new ArrayList<>(), this);
         searchRV.setAdapter(searchAdapter);
@@ -375,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         mSingerNameController.setText(song.getArtist());
         Glide.with(getApplicationContext())
                 .load(song.getImage())
+                .placeholder(R.drawable.music_note)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(mSongImageController);
         mPlayPauseButtonController.setImageResource(R.drawable.ic_pause_circle_controler);

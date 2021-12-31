@@ -166,6 +166,7 @@ public class MediaPlayControlFragment extends Fragment {
         mSingerNameTView.setText(song.getArtist());
         Glide.with(mContext)
                 .load(song.getImage())
+                .placeholder(R.drawable.music_note)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(mSongImage);
         

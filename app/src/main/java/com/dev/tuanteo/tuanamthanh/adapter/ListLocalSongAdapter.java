@@ -20,6 +20,8 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
@@ -29,7 +31,7 @@ import java.util.List;
 
 public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdapter.ViewHolder> {
 
-    private Context mContext;
+    protected Context mContext;
     protected static List<Song> mListSong;
     private static ILocalSongClickListener mListener;
 
@@ -51,39 +53,39 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.getSongName().setText(mListSong.get(position).getName());
         holder.getSingerName().setText(mListSong.get(position).getArtist());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            Uri imageUri = queryAlbumUri(mListSong.get(position).getId());
-//            if (imageUri != null) {
-//                holder.getSongImageview().setImageURI(imageUri);
-//            } else {
-//                holder.getSongImageview().setImageResource(R.drawable.song_image);
-//            }
-        }
 
-        holder.getMenuImageView().setOnClickListener(v -> {
-            //creating a popup menu
-            PopupMenu popup = new PopupMenu(mContext, holder.mMenuImageView);
-            //inflating menu from xml resource
-            popup.inflate(R.menu.song_options_menu);
-            //adding click listener
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.play_song_action:
-                        mListener.playSong(mListSong.get(position), false, false);
-                        return true;
-                    case R.id.delete_song_action:
-                        // TODO: 12/31/2021 them logic xoa bai hat
-                        return true;
-                    case R.id.favorite_song_action:
-                        // TODO: 12/31/2021 them logic bai hat yeu thich
-                        return true;
-                    default:
-                        return false;
-                }
+        Glide.with(mContext)
+                .load(mListSong.get(position).getImage())
+                .placeholder(R.drawable.music_note)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(holder.getSongImageview());
+
+        if (holder.getMenuImageView() != null) {
+            holder.getMenuImageView().setOnClickListener(v -> {
+                //creating a popup menu
+                PopupMenu popup = new PopupMenu(mContext, holder.mMenuImageView);
+                //inflating menu from xml resource
+                popup.inflate(R.menu.song_options_menu);
+                //adding click listener
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.play_song_action:
+                            mListener.playSong(mListSong.get(position), false, false);
+                            return true;
+                        case R.id.delete_song_action:
+                            // TODO: 12/31/2021 them logic xoa bai hat
+                            return true;
+                        case R.id.favorite_song_action:
+                            // TODO: 12/31/2021 them logic bai hat yeu thich
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+                //displaying the popup
+                popup.show();
             });
-            //displaying the popup
-            popup.show();
-        });
+        }
     }
 
     @Override
