@@ -90,7 +90,7 @@ public class MediaPlayService extends Service {
         /*TuanTeo: Khởi tạo danh sách bài hát ban đầu */
         if (mIsOnlineList) {
             mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
-            Utils.updateDurationForListSong(mListPlaySong);
+//            Utils.updateDurationForListSong(mListPlaySong);
         } else {
             new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
         }
@@ -209,7 +209,7 @@ public class MediaPlayService extends Service {
             } else {
                 mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
             }
-            Utils.updateDurationForListSong(mListPlaySong);
+//            Utils.updateDurationForListSong(mListPlaySong);
         } else {
             new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
         }
@@ -299,8 +299,12 @@ public class MediaPlayService extends Service {
                 }
             }
 
+            mListPlaySong.get(mPlayIndex)
+                    .setDuration(Utils.getSongDuration(mListPlaySong.get(mPlayIndex).getPath()));
+
             /*TuanTeo: Cap nhat lai giao dien Notification */
-            updateNotificationUI();
+//            updateNotificationUI();
+            sendBroadcastUpdateUI();
         }).start();
     }
 
