@@ -26,7 +26,7 @@ import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdapter.ViewHolder> {
@@ -38,6 +38,8 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
     public ListLocalSongAdapter(Context context, List<Song> listSong, ILocalSongClickListener listener) {
         mContext = context;
         mListSong = listSong;
+        /*TuanTeo: Sap xep theo A-Z */
+        Collections.sort(mListSong);
         mListener = listener;
     }
 

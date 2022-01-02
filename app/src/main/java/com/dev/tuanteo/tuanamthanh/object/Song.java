@@ -1,6 +1,6 @@
 package com.dev.tuanteo.tuanamthanh.object;
 
-public class Song {
+public class Song implements Comparable<Song>{
     private String id;
     private String name;
     private String album;
@@ -63,5 +63,13 @@ public class Song {
 
     public int getDuration() {
         return mDuration;
+    }
+
+    @Override
+    public int compareTo(Song song) {
+        if (song == null || song.getName() == null) {
+            return 0;
+        }
+        return this.getName().compareTo(song.getName());
     }
 }
