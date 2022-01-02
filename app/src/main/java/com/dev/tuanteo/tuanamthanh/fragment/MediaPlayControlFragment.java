@@ -39,7 +39,7 @@ public class MediaPlayControlFragment extends Fragment {
     private ImageView mFavoriteButton;
 
     /*TuanTeo: bien luu trang thai dang hien thi cua fragment */
-    private boolean mIsDisplaying;
+    public boolean mIsDisplaying;
 
     /*TuanTeo: luu trang thai nhac yeu thich */
     private boolean mIsFavorite;
@@ -178,5 +178,9 @@ public class MediaPlayControlFragment extends Fragment {
 
         mSeekBar.setMax(mMediaPlayService.getCurrentPlaySong().getDuration());
         mSeekBar.setProgress(mMediaPlayService.getMediaPlayer().getCurrentPosition());
+    }
+
+    public boolean isIsDisplaying() {
+        return mIsDisplaying;
     }
 }

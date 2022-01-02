@@ -20,7 +20,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -129,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
         }
     };
+
+    /*TuanTeo: Search view */
+    private SearchView mSearchView;
+    private RecyclerView mSearchRV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,9 +242,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @return
      */
     private List<Fragment> initListFragments() {
+        // TODO: 1/2/2022 them danh sách nhạc yeu thích
         List<Fragment> listFragment = new ArrayList<>();
         listFragment.add(new HomeFragment(getApplicationContext(), this));
         listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
+//        listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
         return listFragment;
     }
 
@@ -259,15 +268,15 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
         // TODO: 12/26/2021 Làm lại đoạn này
         MenuItem myActionMenuItem = menu.findItem( R.id.app_bar_search);
-        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        RecyclerView searchRV = findViewById(R.id.search_result_recycler_view);
+        mSearchView = (SearchView) myActionMenuItem.getActionView();
+        mSearchRV = findViewById(R.id.search_result_recycler_view);
 
         SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), new ArrayList<>(), this);
-        searchRV.setAdapter(searchAdapter);
-        searchRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mSearchRV.setAdapter(searchAdapter);
+        mSearchRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        searchView.setOnSearchClickListener(v -> {
-            searchRV.setVisibility(View.VISIBLE);
+        mSearchView.setOnSearchClickListener(v -> {
+            mSearchRV.setVisibility(View.VISIBLE);
 
             ArrayList<Song> resultList = new ArrayList<>();
             searchAdapter.setListSong(resultList);
@@ -278,8 +287,8 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             mMainTabView.setVisibility(View.GONE);
         });
 
-        searchView.setOnCloseListener(() -> {
-            searchRV.setVisibility(View.GONE);
+        mSearchView.setOnCloseListener(() -> {
+            mSearchRV.setVisibility(View.GONE);
 
             /*TuanTeo: Hiển thị lại controller */
             mMainPlayerController.setVisibility(View.VISIBLE);
@@ -287,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             return false;
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 myActionMenuItem.collapseActionView();
@@ -452,5 +461,44 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 .replace(R.id.main_frame_container, detailSongFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    /*TuanTeo: Bien dung cho back 2 lan moi thoat app */
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (findViewById(R.id.main_frame_container).getVisibility() == View.VISIBLE) {
+            super.onBackPressed();
+            return;
+        }
+
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+            mSearchView.onActionViewCollapsed();
+            mSearchRV.setVisibility(View.GONE);
+            return;
+        }
+
+        if (mMediaPlayControlFragment != null && mMediaPlayControlFragment.isIsDisplaying()) {
+            super.onBackPressed();
+            return;
+        }
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, getResources().getString(R.string.confirm_exit), Toast.LENGTH_SHORT).show();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }
