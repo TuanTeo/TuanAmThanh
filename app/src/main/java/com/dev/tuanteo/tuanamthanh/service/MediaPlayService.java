@@ -43,8 +43,13 @@ public class MediaPlayService extends Service {
 
     /*TuanTeo: Thông tin danh sách bài hát */
     private ArrayList<Song> mListPlaySong;
+
+    /*TuanTeo: Thông tin bài hát đang phát */
+    private Song mCurrentSong;
+
     private int mPlayIndex;
     private String mPlayingSongID;
+    private String mPlayingSongImage;
     private String mPlayingSongPath;
     private boolean mIsOnlineList;
 
@@ -85,7 +90,13 @@ public class MediaPlayService extends Service {
 
         mPlayingSongID = intent.getStringExtra(Constant.SONG_ID_TO_START_SERVICE);
         mPlayingSongPath = intent.getStringExtra(Constant.SONG_PATH_START_SERVICE);
+        mPlayingSongImage = intent.getStringExtra(Constant.SONG_IMAGE_START_SERVICE);
         mIsOnlineList = intent.getBooleanExtra(Constant.IS_ONLINE_LIST, false);
+
+        mCurrentSong = new Song();
+        mCurrentSong.setId(mPlayingSongID);
+        mCurrentSong.setPath(mPlayingSongPath);
+        mCurrentSong.setImage(mPlayingSongImage);
 
         /*TuanTeo: Khởi tạo danh sách bài hát ban đầu */
         if (mIsOnlineList) {
@@ -114,11 +125,11 @@ public class MediaPlayService extends Service {
     }
 
     private void playMusic() {
-        LogUtils.log("MediaPlayService playMusic " + mPlayingSongPath);
+        LogUtils.log("MediaPlayService playMusic " + mCurrentSong.getPath());
 
         try {
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.setDataSource(getApplicationContext(), Uri.parse(mPlayingSongPath));
+            mMediaPlayer.setDataSource(getApplicationContext(), Uri.parse(mCurrentSong.getPath()));
             mMediaPlayer.prepare();
             mMediaPlayer.start();
 
@@ -192,8 +203,8 @@ public class MediaPlayService extends Service {
             mIsOnlineList = isOnline;
             updateListPlaySong(isSuggestList);
         }
-        mPlayingSongID = song.getId();
-        mPlayingSongPath = song.getPath();
+
+        mCurrentSong = song;
         stopMusic();
         playMusic();
     }
@@ -209,7 +220,6 @@ public class MediaPlayService extends Service {
             } else {
                 mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
             }
-//            Utils.updateDurationForListSong(mListPlaySong);
         } else {
             new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
         }
@@ -292,18 +302,21 @@ public class MediaPlayService extends Service {
     private void updatePlaySongIndex() {
         new Thread(()-> {
             for (int i=0; i< mListPlaySong.size(); i++) {
-                if (mPlayingSongID.equals(mListPlaySong.get(i).getId())) {
+                if (mCurrentSong.getId().equals(mListPlaySong.get(i).getId())) {
                     mPlayIndex = i;
+
+                    mCurrentSong = mListPlaySong.get(i);
+
                     LogUtils.log("updatePlaySongIndex mPlayIndex = " + i);
                     break;
                 }
             }
 
-            mListPlaySong.get(mPlayIndex)
-                    .setDuration(Utils.getSongDuration(mListPlaySong.get(mPlayIndex).getPath()));
+//            if (mIsOnlineList) {
+                mCurrentSong.setDuration(Utils.getSongDuration(mCurrentSong.getPath()));
+//            }
 
             /*TuanTeo: Cap nhat lai giao dien Notification */
-//            updateNotificationUI();
             sendBroadcastUpdateUI();
         }).start();
     }
@@ -313,7 +326,7 @@ public class MediaPlayService extends Service {
      * @return current play song
      */
     public Song getCurrentPlaySong() {
-        return mListPlaySong.get(mPlayIndex);
+        return mCurrentSong;
     }
 
     private void autoNextMedia() {
@@ -327,12 +340,10 @@ public class MediaPlayService extends Service {
      * Hàm gửi broadcast cập nhật UI trên MainActivity
      */
     private void sendBroadcastUpdateUI() {
-        Song currentSong = mListPlaySong.get(mPlayIndex);
-
         Intent intent = new Intent(Constant.ACTION_UPDATE_UI);
-        intent.putExtra(Constant.SONG_NAME_TO_START_SERVICE, currentSong.getName());
-        intent.putExtra(Constant.SINGER_NAME_TO_START_SERVICE, currentSong.getArtist());
-        intent.putExtra(Constant.SONG_IMAGE_TO_START_SERVICE, currentSong.getImage());
+        intent.putExtra(Constant.SONG_NAME_TO_UPDATE_UI, mCurrentSong.getName());
+        intent.putExtra(Constant.SINGER_NAME_TO_UPDATE_UI, mCurrentSong.getArtist());
+        intent.putExtra(Constant.SONG_IMAGE_TO_UPDATE_UI, mCurrentSong.getImage());
 
         sendBroadcast(intent);
 

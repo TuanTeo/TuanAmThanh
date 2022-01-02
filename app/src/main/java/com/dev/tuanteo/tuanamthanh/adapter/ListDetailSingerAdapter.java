@@ -15,6 +15,7 @@ public class ListDetailSingerAdapter extends ListSuggestAdapter {
     @Override
     protected void getAndUpdateListSong(String condition) {
         mListSuggestSong = SongUtils.getListArtistSong(condition);
+        FirebaseFireStoreAPI.setListFindSong(mListSuggestSong);
         notifyDataSetChanged();
     }
 }

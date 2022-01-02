@@ -29,7 +29,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -107,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         public void onReceive(Context context, Intent intent) {
             LogUtils.log("mUpdateUIReceive updateUI");
 
-            String songName = intent.getStringExtra(Constant.SONG_NAME_TO_START_SERVICE);
-            String singerName = intent.getStringExtra(Constant.SINGER_NAME_TO_START_SERVICE);
-            String songImage = intent.getStringExtra(Constant.SONG_IMAGE_TO_START_SERVICE);
+            String songName = intent.getStringExtra(Constant.SONG_NAME_TO_UPDATE_UI);
+            String singerName = intent.getStringExtra(Constant.SINGER_NAME_TO_UPDATE_UI);
+            String songImage = intent.getStringExtra(Constant.SONG_IMAGE_TO_UPDATE_UI);
 
             mSongNameController.setText(songName);
             mSingerNameController.setText(singerName);
@@ -270,6 +269,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         searchView.setOnSearchClickListener(v -> {
             searchRV.setVisibility(View.VISIBLE);
 
+            ArrayList<Song> resultList = new ArrayList<>();
+            searchAdapter.setListSong(resultList);
+            searchAdapter.notifyDataSetChanged();
+
             /*TuanTeo: Ẩn controller */
             mMainPlayerController.setVisibility(View.GONE);
             mMainTabView.setVisibility(View.GONE);
@@ -352,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 mMainPlayerController.setVisibility(View.VISIBLE);
             }
 
-            startMediaPlayService(isOnline, song.getId(), song.getPath());
+            startMediaPlayService(isOnline, song.getId(), song.getPath(), song.getImage());
             bindMediaPlayService();
         } else {
             /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
@@ -394,10 +397,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @param songId        song id to start the first time
      * @param songPath      song path to start the first time
      */
-    private void startMediaPlayService(boolean isOnline, String songId, String songPath) {
+    private void startMediaPlayService(boolean isOnline, String songId, String songPath, String songImage) {
         Intent serviceIntent = new Intent(this, MediaPlayService.class);
         serviceIntent.putExtra(Constant.SONG_ID_TO_START_SERVICE, songId);
         serviceIntent.putExtra(Constant.SONG_PATH_START_SERVICE, songPath);
+        serviceIntent.putExtra(Constant.SONG_IMAGE_START_SERVICE, songImage);
         serviceIntent.putExtra(Constant.IS_ONLINE_LIST, isOnline);
         ContextCompat.startForegroundService(this, serviceIntent);
     }

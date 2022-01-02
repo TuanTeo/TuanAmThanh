@@ -14,6 +14,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseFireStoreAPI {
     public static final String ALL_SONG_DB = "song";
@@ -165,7 +166,7 @@ public class FirebaseFireStoreAPI {
                     }
 
                     mListAllSong = listSuggestSong;
-//                    Utils.updateDurationForListSong(mListAllSong);
+
                     Log.d("FirebaseFirestore", "Load All Song Completed!", task.getException());
                 } else {
                     Log.d("FirebaseFirestore", "Error getting document ", task.getException());
@@ -183,6 +184,10 @@ public class FirebaseFireStoreAPI {
             return getListSuggestSong();
         }
         return mListFindSong;
+    }
+
+    public static void setListFindSong(List<Song> mListFindSong) {
+        FirebaseFireStoreAPI.mListFindSong = (ArrayList<Song>) mListFindSong;
     }
 
     public static ArrayList<Song> getListAllSong() {
