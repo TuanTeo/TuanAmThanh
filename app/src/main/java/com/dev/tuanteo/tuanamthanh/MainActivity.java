@@ -477,6 +477,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             mSearchView.setIconified(true);
             mSearchView.onActionViewCollapsed();
             mSearchRV.setVisibility(View.GONE);
+
+            /*TuanTeo: Hiển thị lại controller */
+            mMainPlayerController.setVisibility(View.VISIBLE);
+            mMainTabView.setVisibility(View.VISIBLE);
             return;
         }
 
