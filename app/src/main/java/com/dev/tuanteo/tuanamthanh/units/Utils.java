@@ -1,6 +1,11 @@
 package com.dev.tuanteo.tuanamthanh.units;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
@@ -14,7 +19,6 @@ public class Utils {
      * @return
      */
     public static int getSongDuration(String url) {
-        int count = 0;
         if (url != null) {
             try {
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
@@ -23,12 +27,7 @@ public class Utils {
                 long timeInmillisec = Long.parseLong(time);
                 return (int) timeInmillisec;
             } catch (RuntimeException e) {
-                count++;
-                if (count < 4) {
-                    return getSongDuration(url);
-                } else {
-                    return 0;
-                }
+                return 0;
             }
         } else {
             return 0;
@@ -45,5 +44,52 @@ public class Utils {
                 listPlaySong.get(i).setDuration(Utils.getSongDuration(listPlaySong.get(i).getPath()));
             }
         }).start();
+    }
+
+
+    public static boolean deleteFileUsingDisplayName(Context context, String displayName) {
+
+        Uri uri = getUriFromDisplayName(context, displayName);
+        if (uri != null) {
+            final ContentResolver resolver = context.getContentResolver();
+            String[] selectionArgsPdf = new String[]{displayName};
+
+            try {
+                resolver.delete(uri, MediaStore.Audio.Media.DISPLAY_NAME + "=?", selectionArgsPdf);
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // show some alert message
+            }
+        }
+        return false;
+
+    }
+
+    public static Uri getUriFromDisplayName(Context context, String displayName) {
+
+        String[] projection;
+        projection = new String[]{MediaStore.Files.FileColumns._ID};
+
+        // TODO This will break if we have no matching item in the MediaStore.
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection,
+                MediaStore.Audio.Media.DISPLAY_NAME + " LIKE ?", new String[]{displayName}, null);
+        assert cursor != null;
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+            int columnIndex = cursor.getColumnIndex(projection[0]);
+            long fileId = cursor.getLong(columnIndex);
+
+            cursor.close();
+            return Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + "/" + fileId);
+        } else {
+            return null;
+        }
+    }
+
+    public static String getNameFileByPath(String path) {
+        String[] splits = path.split("/");
+        return splits[splits.length -1];
     }
 }

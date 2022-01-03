@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -30,6 +31,7 @@ import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -136,6 +138,8 @@ public class MediaPlayService extends Service {
             mMediaPlayer.setOnCompletionListener(mp -> autoNextMedia());
         } catch (IOException e) {
             e.printStackTrace();
+            updateListPlaySong(mIsOnlineList);
+            resumeMusic();
         }
 
         /*TuanTeo: Update lại vị trí bài hát đang chơi trong danh sách */
@@ -273,7 +277,12 @@ public class MediaPlayService extends Service {
         } else {
             ++mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList,false, false);
+        try {
+            playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -290,7 +299,12 @@ public class MediaPlayService extends Service {
         } else {
             --mPlayIndex;
         }
-        playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
+        try {
+            playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
         LogUtils.log("nextMusic playSong index " + mPlayIndex);
 
         sendBroadcastUpdateUI();
@@ -312,9 +326,7 @@ public class MediaPlayService extends Service {
                 }
             }
 
-//            if (mIsOnlineList) {
-                mCurrentSong.setDuration(Utils.getSongDuration(mCurrentSong.getPath()));
-//            }
+            mCurrentSong.setDuration(Utils.getSongDuration(mCurrentSong.getPath()));
 
             /*TuanTeo: Cap nhat lai giao dien Notification */
             sendBroadcastUpdateUI();
@@ -330,8 +342,6 @@ public class MediaPlayService extends Service {
     }
 
     private void autoNextMedia() {
-        // TODO: 11/21/2021 them logic kiem tra co phat lai hay khong o day
-
         /*TuanTeo: Logic phát bài hát tiếp theo */
         nextMusic();
     }

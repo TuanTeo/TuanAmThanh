@@ -28,6 +28,7 @@ import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
+import com.dev.tuanteo.tuanamthanh.units.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +80,21 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                             return true;
                         case R.id.delete_song_action:
                             // TODO: 12/31/2021 them logic xoa bai hat
+                            /*TuanTeo: Xoa bai hat Offline */
+                            boolean result = Utils.deleteFileUsingDisplayName(mContext, Utils.getNameFileByPath(mListSong.get(position).getPath()));
+
+                            if (result) {
+                                Toast.makeText(mContext, mContext.getString(R.string.deleted_complete),
+                                        Toast.LENGTH_SHORT).show();
+
+                                mListSong = SongUtils.getListLocalSong(mContext);
+
+                                /*TuanTeo: Sap xep theo A-Z */
+                                Collections.sort(mListSong);
+
+                                notifyDataSetChanged();
+                            }
+
                             return true;
                         case R.id.favorite_song_action:
                             /*TuanTeo: Them vao bai hat yeu thich */

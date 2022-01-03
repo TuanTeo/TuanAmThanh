@@ -13,6 +13,7 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SongUtils {
@@ -71,6 +72,8 @@ public class SongUtils {
             }
             c.close();
         }
+
+        Collections.sort(tempAudioList);
         return tempAudioList;
     }
 
