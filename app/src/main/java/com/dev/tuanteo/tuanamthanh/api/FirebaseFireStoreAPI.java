@@ -1,5 +1,7 @@
 package com.dev.tuanteo.tuanamthanh.api;
 
+import android.content.Context;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,7 +14,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,6 +178,40 @@ public class FirebaseFireStoreAPI {
                 }
             });
         }).start();
+    }
+
+    public static void downloadMusicFile(Context context, String path) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+
+        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "music");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        final File localFile = new File(rootPath,"imageName.mp3");
+
+        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
+            Log.d("downloadMusicFile", "downloadMusicFile: ");
+            // TODO: 1/2/2022 Add to Database tải về
+            localFile.getPath();
+        });
+    }
+
+    public static void downloadImageFile(Context context, String path) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+
+        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "image");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        final File localFile = new File(rootPath,"imageName1.jpg");
+
+        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
+            Log.d("downloadImageFile", "downloadImageFile: ");
+            // TODO: 1/2/2022 Add to Database tải về
+            localFile.getPath();
+        });
     }
 
     public static ArrayList<Song> getListSuggestSong() {
