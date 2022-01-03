@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/play_song_action"
+        android:title="@string/play"/>
+
+    <item android:id="@+id/favorite_song_action"
+        android:title="@string/add_to_favorite"/>
+
+    <item android:id="@+id/download_song_action"
+        android:title="@string/download"/>
+</menu>

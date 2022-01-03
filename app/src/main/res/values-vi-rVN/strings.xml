@@ -15,4 +15,6 @@
     <string name="added_to_favorite">Đã thêm</string>
     <string name="deleted_complete">Đã xóa</string>
     <string name="error">Lỗi</string>
+    <string name="download">Tải xuống</string>
+    <string name="download_complete">Tải xuống thành công</string>
 </resources>

@@ -154,7 +154,6 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         public TextView getSingerName() {
             return mSingerName;
         }
-
         public ImageView getMenuImageView() {
             return mMenuImageView;
         }

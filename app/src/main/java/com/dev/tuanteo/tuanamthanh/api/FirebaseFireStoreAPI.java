@@ -1,14 +1,21 @@
 package com.dev.tuanteo.tuanamthanh.api;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongDatabase;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongProvider;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.IFirebaseListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -180,40 +187,6 @@ public class FirebaseFireStoreAPI {
         }).start();
     }
 
-    public static void downloadMusicFile(Context context, String path) {
-        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
-
-        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "music");
-        if(!rootPath.exists()) {
-            rootPath.mkdirs();
-        }
-
-        final File localFile = new File(rootPath,"imageName.mp3");
-
-        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
-            Log.d("downloadMusicFile", "downloadMusicFile: ");
-            // TODO: 1/2/2022 Add to Database tải về
-            localFile.getPath();
-        });
-    }
-
-    public static void downloadImageFile(Context context, String path) {
-        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
-
-        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "image");
-        if(!rootPath.exists()) {
-            rootPath.mkdirs();
-        }
-
-        final File localFile = new File(rootPath,"imageName1.jpg");
-
-        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
-            Log.d("downloadImageFile", "downloadImageFile: ");
-            // TODO: 1/2/2022 Add to Database tải về
-            localFile.getPath();
-        });
-    }
-
     public static ArrayList<Song> getListSuggestSong() {
         return mListSuggestSong;
     }
@@ -231,5 +204,71 @@ public class FirebaseFireStoreAPI {
 
     public static ArrayList<Song> getListAllSong() {
         return mListAllSong;
+    }
+
+    /**
+     * TuanTeo: Tai bai hat online
+     * @param mContext
+     * @param song
+     */
+    public static void downloadSong(Context mContext, Song song) {
+        mContext.getContentResolver().insert(DownloadSongProvider.CONTENT_URI,
+                SongUtils.getContentDownloadSong(song));
+
+        downloadMusicFile(mContext, song.getPath(), song.getId());
+        downloadImageFile(mContext, song.getImage(), song.getId());
+
+        Toast.makeText(mContext, mContext.getString(R.string.download_complete), Toast.LENGTH_SHORT).show();
+    }
+
+    public static void downloadMusicFile(Context context, String path, String id) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+
+        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "music");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        final File localFile = new File(rootPath,id + ".mp3");
+
+        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
+            Log.d("downloadMusicFile", "downloadMusicFile: addOnSuccessListener");
+
+            ContentValues values = new ContentValues();
+            values.put(DownloadSongDatabase.COLUMN_SONG_PATH, localFile.getPath());
+
+            String condition = DownloadSongDatabase.COLUMN_SONG_ID + "= '" + id +"'";
+
+            context.getContentResolver().update(DownloadSongProvider.CONTENT_URI, values,
+                    condition, null);
+
+            context.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    condition, null);
+        });
+    }
+
+    public static void downloadImageFile(Context context, String path, String id) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+
+        File rootPath = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "image");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        final File localFile = new File(rootPath,id + ".jpg");
+
+        mStorageRef.getFile(localFile).addOnSuccessListener(file -> {
+            Log.d("downloadImageFile", "downloadImageFile: addOnSuccessListener");
+            ContentValues values = new ContentValues();
+            values.put(DownloadSongDatabase.COLUMN_SONG_IMAGE, localFile.getPath());
+
+            String condition = DownloadSongDatabase.COLUMN_SONG_ID + "= '" + id +"'";
+
+            context.getContentResolver().update(DownloadSongProvider.CONTENT_URI, values,
+                    condition, null);
+
+            context.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    condition, null);
+        });
     }
 }

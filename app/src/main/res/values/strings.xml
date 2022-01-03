@@ -73,4 +73,6 @@ However, if you want to modify a path relative to the motion, for example make i
     <string name="confirm_exit">Please click BACK again to exit</string>
     <string name="deleted_complete">Deleted</string>
     <string name="error">Error</string>
+    <string name="download">Download</string>
+    <string name="download_complete">Download Completed</string>
 </resources>
