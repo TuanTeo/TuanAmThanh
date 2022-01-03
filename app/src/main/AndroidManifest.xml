@@ -28,6 +28,16 @@
         </service>
 
         <receiver android:name=".receiver.NotificationReceiver"/>
+
+        <provider
+            android:authorities="com.dev.tuanteo.tuanamthanh.download"
+            android:name=".database.DownloadSongProvider"
+            android:exported="false" />
+
+        <provider
+            android:authorities="com.dev.tuanteo.tuanamthanh.favorite"
+            android:name=".database.FavoriteSongProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

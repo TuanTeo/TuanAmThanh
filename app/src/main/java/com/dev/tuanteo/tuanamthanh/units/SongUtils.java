@@ -1,5 +1,6 @@
 package com.dev.tuanteo.tuanamthanh.units;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongDatabase;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
@@ -100,5 +102,18 @@ public class SongUtils {
         }
 
         return artistSongList;
+    }
+
+    public static ContentValues getContentDownloadSong(Song song) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_ID, song.getId());
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_NAME, song.getName());
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_ARTIST, song.getArtist());
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_PATH, song.getPath());
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_IMAGE, song.getImage());
+        contentValues.put(DownloadSongDatabase.COLUMN_SONG_ALBUM, song.getAlbum());
+
+        return contentValues;
     }
 }
