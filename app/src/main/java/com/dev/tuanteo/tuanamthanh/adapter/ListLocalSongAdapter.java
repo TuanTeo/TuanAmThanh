@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
@@ -86,6 +87,11 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                             if (result) {
                                 Toast.makeText(mContext, mContext.getString(R.string.deleted_complete),
                                         Toast.LENGTH_SHORT).show();
+
+                                /*TuanTeo: Xoa khoi bai hat yeu thich */
+                                mContext.getContentResolver().delete(FavoriteSongProvider.CONTENT_URI,
+                                        FavoriteSongDatabase.COLUMN_SONG_ID + " =?",
+                                        new String[] {mListSong.get(position).getId()});
 
                                 mListSong = SongUtils.getListLocalSong(mContext);
 
