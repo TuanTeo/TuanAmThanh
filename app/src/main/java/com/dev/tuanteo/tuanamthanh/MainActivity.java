@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     private SearchView mSearchView;
     private RecyclerView mSearchRV;
 
+    private ListAllSongFragment mListLocalSongFragment;
+    private HomeFragment mHomeFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -243,9 +246,12 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      */
     private List<Fragment> initListFragments() {
         // TODO: 1/2/2022 them danh sách nhạc yeu thích
+        mHomeFragment = new HomeFragment(getApplicationContext(), this);
+        mListLocalSongFragment = new ListAllSongFragment(getApplicationContext(), this);
+
         List<Fragment> listFragment = new ArrayList<>();
-        listFragment.add(new HomeFragment(getApplicationContext(), this));
-        listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
+        listFragment.add(mHomeFragment);
+        listFragment.add(mListLocalSongFragment);
 //        listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
         return listFragment;
     }
@@ -375,6 +381,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     @Override
     public void distroyDetailFragment() {
         findViewById(R.id.main_frame_container).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateListLocalSong() {
+        mListLocalSongFragment.updateUI();
     }
 
     /**

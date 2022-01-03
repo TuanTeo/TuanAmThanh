@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongDatabase;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongProvider;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
@@ -80,26 +82,28 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                             mListener.playSong(mListSong.get(position), false, false);
                             return true;
                         case R.id.delete_song_action:
-                            // TODO: 12/31/2021 them logic xoa bai hat
                             /*TuanTeo: Xoa bai hat Offline */
                             boolean result = Utils.deleteFileUsingDisplayName(mContext, Utils.getNameFileByPath(mListSong.get(position).getPath()));
 
-                            if (result) {
-                                Toast.makeText(mContext, mContext.getString(R.string.deleted_complete),
-                                        Toast.LENGTH_SHORT).show();
-
-                                /*TuanTeo: Xoa khoi bai hat yeu thich */
-                                mContext.getContentResolver().delete(FavoriteSongProvider.CONTENT_URI,
-                                        FavoriteSongDatabase.COLUMN_SONG_ID + " =?",
+                            if (!result) {
+                                mContext.getContentResolver().delete(DownloadSongProvider.CONTENT_URI,
+                                        DownloadSongDatabase.COLUMN_SONG_ID + " =?",
                                         new String[] {mListSong.get(position).getId()});
-
-                                mListSong = SongUtils.getListLocalSong(mContext);
-
-                                /*TuanTeo: Sap xep theo A-Z */
-                                Collections.sort(mListSong);
-
-                                notifyDataSetChanged();
                             }
+                            Toast.makeText(mContext, mContext.getString(R.string.deleted_complete),
+                                    Toast.LENGTH_SHORT).show();
+
+                            /*TuanTeo: Xoa khoi bai hat yeu thich */
+                            mContext.getContentResolver().delete(FavoriteSongProvider.CONTENT_URI,
+                                    FavoriteSongDatabase.COLUMN_SONG_ID + " =?",
+                                    new String[] {mListSong.get(position).getId()});
+
+                            mListSong = SongUtils.getListLocalSong(mContext);
+
+                            /*TuanTeo: Sap xep theo A-Z */
+                            Collections.sort(mListSong);
+
+                            notifyDataSetChanged();
 
                             return true;
                         case R.id.favorite_song_action:
@@ -123,6 +127,11 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
     @Override
     public int getItemCount() {
         return mListSong.size();
+    }
+
+    public void updateListLocalSong() {
+        mListSong = SongUtils.getListLocalSong(mContext);
+        notifyDataSetChanged();
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

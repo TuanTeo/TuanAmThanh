@@ -5,4 +5,5 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 public interface ILocalSongClickListener {
     void playSong(Song song, boolean isOnline, boolean isSuggestList);
     void distroyDetailFragment();
+    void updateListLocalSong();
 }

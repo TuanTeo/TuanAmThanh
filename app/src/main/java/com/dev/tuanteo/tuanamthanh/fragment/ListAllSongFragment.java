@@ -23,6 +23,7 @@ public class ListAllSongFragment extends Fragment {
     private final Context mContext;
     private RecyclerView mListSongRecyclerView;
     private ILocalSongClickListener mItemClickListener;
+    private ListLocalSongAdapter mLocalSongAdapter;
 
     public ListAllSongFragment(Context context, ILocalSongClickListener listener) {
         this.mContext = context;
@@ -43,9 +44,9 @@ public class ListAllSongFragment extends Fragment {
 
     private void initViewComponent(View view) {
         mListSongRecyclerView = view.findViewById(R.id.list_all_song_recycler_view);
-        ListLocalSongAdapter localSongAdapter = new ListLocalSongAdapter(mContext,
+        mLocalSongAdapter = new ListLocalSongAdapter(mContext,
                     SongUtils.getListLocalSong(mContext), mItemClickListener);
-        mListSongRecyclerView.setAdapter(localSongAdapter);
+        mListSongRecyclerView.setAdapter(mLocalSongAdapter);
         mListSongRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
@@ -56,5 +57,9 @@ public class ListAllSongFragment extends Fragment {
         if (mItemClickListener != null) {
             mItemClickListener = null;
         }
+    }
+
+    public void updateUI() {
+        mLocalSongAdapter.updateListLocalSong();
     }
 }

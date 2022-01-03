@@ -9,6 +9,17 @@ public class Song implements Comparable<Song>{
     private int mDuration;
     private String image;
 
+    public Song(){}
+
+    public Song(String id, String name, String artist, String path, String image, String album) {
+        this.id = id;
+        this.name = name;
+        this.album = album;
+        this.artist = artist;
+        this.path = path;
+        this.image = image;
+    }
+
     public String getImage() {
         return image;
     }

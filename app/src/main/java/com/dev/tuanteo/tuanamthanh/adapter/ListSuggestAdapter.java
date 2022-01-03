@@ -85,9 +85,9 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
                             mListener.playSong(mListSuggestSong.get(position), true, true);
                             return true;
                         case R.id.download_song_action:
-
                             FirebaseFireStoreAPI.downloadSong(mContext, mListSuggestSong.get(position));
 
+                            mListener.updateListLocalSong();
                             return true;
                         case R.id.favorite_song_action:
                             /*TuanTeo: Them vao bai hat yeu thich */

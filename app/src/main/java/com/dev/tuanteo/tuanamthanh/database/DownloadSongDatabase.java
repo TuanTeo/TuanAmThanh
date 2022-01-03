@@ -18,6 +18,15 @@ public class DownloadSongDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_SONG_IMAGE = "image";
     public static final String COLUMN_SONG_ALBUM = "album";
 
+    public static final String[] BASE_COLUMN = {
+            COLUMN_SONG_ID,
+            COLUMN_SONG_NAME,
+            COLUMN_SONG_PATH,
+            COLUMN_SONG_ARTIST,
+            COLUMN_SONG_IMAGE,
+            COLUMN_SONG_ALBUM
+    };
+
     private String SQL_CREATE_ENTRIES = "CREATE TABLE " + TABLE_NAME + " (" +
             COLUMN_SONG_ID + " TEXT," +
             COLUMN_SONG_NAME + " TEXT," +

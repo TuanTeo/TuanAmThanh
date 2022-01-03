@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.database.DownloadSongDatabase;
+import com.dev.tuanteo.tuanamthanh.database.DownloadSongProvider;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
@@ -73,6 +74,9 @@ public class SongUtils {
             c.close();
         }
 
+        /*TuanTeo: Them danh sach nhac tai ve */
+        tempAudioList.addAll(getListDownLoadSong(context));
+
         Collections.sort(tempAudioList);
         return tempAudioList;
     }
@@ -118,5 +122,36 @@ public class SongUtils {
         contentValues.put(DownloadSongDatabase.COLUMN_SONG_ALBUM, song.getAlbum());
 
         return contentValues;
+    }
+
+    /**
+     * Danh sách bài hát tải về
+     * @param context
+     * @return
+     */
+    public static ArrayList<Song> getListDownLoadSong(Context context) {
+        ArrayList<Song> listDownloadSong = new ArrayList<>();
+
+        Cursor cursor = context.getContentResolver().query(DownloadSongProvider.CONTENT_URI, DownloadSongDatabase.BASE_COLUMN,
+                null, null, null);
+
+        if (cursor!=null && cursor.moveToFirst()) {
+            do {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_NAME));
+                String artist = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ARTIST));
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_PATH));
+                String image = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_IMAGE));
+                String album = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ALBUM));
+
+                Song song = new Song(id, name, artist, path, image, album);
+                listDownloadSong.add(song);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return listDownloadSong;
     }
 }
