@@ -1,6 +1,7 @@
 package com.dev.tuanteo.tuanamthanh.fragment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -17,9 +18,12 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.view.CircularSeekBar;
 
 public class MediaPlayControlFragment extends Fragment {
@@ -142,9 +146,18 @@ public class MediaPlayControlFragment extends Fragment {
             if (mIsFavorite) {
                 mIsFavorite = false;
                 mFavoriteButton.setImageResource(R.drawable.ic_favorite_border);
+
+                /*TuanTeo: Xoa khoi bai hat yeu thich */
+                mContext.getContentResolver().delete(FavoriteSongProvider.CONTENT_URI,
+                        FavoriteSongDatabase.COLUMN_SONG_ID + " =?",
+                        new String[] {mMediaPlayService.getCurrentPlaySong().getId()});
             } else {
                 mIsFavorite = true;
                 mFavoriteButton.setImageResource(R.drawable.ic_favorited);
+
+                /*TuanTeo: Them vao bai hat yeu thich */
+                mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI,
+                        SongUtils.getContentDownloadSong(mMediaPlayService.getCurrentPlaySong()));
             }
         });
     }
@@ -178,6 +191,31 @@ public class MediaPlayControlFragment extends Fragment {
 
         mSeekBar.setMax(mMediaPlayService.getCurrentPlaySong().getDuration());
         mSeekBar.setProgress(mMediaPlayService.getMediaPlayer().getCurrentPosition());
+
+        mIsFavorite = checkIsFavoriteSong(song.getId());
+        if (!mIsFavorite) {
+            mFavoriteButton.setImageResource(R.drawable.ic_favorite_border);
+        } else {
+            mFavoriteButton.setImageResource(R.drawable.ic_favorited);
+        }
+    }
+
+    private boolean checkIsFavoriteSong(String songId) {
+        String[] BASE_PROJECTION = {FavoriteSongDatabase.COLUMN_SONG_ID};
+        String condition = FavoriteSongDatabase.COLUMN_SONG_ID + " = '" + songId +"'";
+
+        Cursor cursor = mContext.getContentResolver()
+                .query(FavoriteSongProvider.CONTENT_URI, BASE_PROJECTION,
+                        condition, null, null);
+
+        if (cursor != null) {
+            if (cursor.getCount()>0) {
+                return true;
+            }
+            cursor.close();
+        }
+
+        return false;
     }
 
     public boolean isIsDisplaying() {

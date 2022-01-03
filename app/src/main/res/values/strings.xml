@@ -68,6 +68,7 @@ However, if you want to modify a path relative to the motion, for example make i
     <string name="default_total_time">03:24</string>
     <string name="play">Play</string>
     <string name="add_to_favorite">Add to favorite</string>
+    <string name="added_to_favorite">Added</string>
     <string name="delete">Delete</string>
     <string name="confirm_exit">Please click BACK again to exit</string>
 </resources>

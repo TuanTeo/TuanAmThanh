@@ -12,4 +12,5 @@
     <string name="add_to_favorite">Thêm vào danh sách yêu thích</string>
     <string name="delete">Xóa</string>
     <string name="confirm_exit">Nhấn back thêm 1 lần để thoát</string>
+    <string name="added_to_favorite">Đã thêm</string>
 </resources>

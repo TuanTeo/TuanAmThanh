@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -23,8 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +81,12 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                             // TODO: 12/31/2021 them logic xoa bai hat
                             return true;
                         case R.id.favorite_song_action:
-                            // TODO: 12/31/2021 them logic bai hat yeu thich
+                            /*TuanTeo: Them vao bai hat yeu thich */
+                            mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI,
+                                    SongUtils.getContentDownloadSong(mListSong.get(position)));
+
+                            Toast.makeText(mContext, mContext.getString(R.string.added_to_favorite),
+                                    Toast.LENGTH_SHORT).show();
                             return true;
                         default:
                             return false;
