@@ -18,4 +18,5 @@
     <string name="download">Tải xuống</string>
     <string name="download_complete">Tải xuống thành công</string>
     <string name="remove_favorite">Bỏ yêu thích</string>
+    <string name="favorite_list">Bài hát yêu thích</string>
 </resources>

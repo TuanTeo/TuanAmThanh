@@ -76,4 +76,5 @@ However, if you want to modify a path relative to the motion, for example make i
     <string name="download">Download</string>
     <string name="download_complete">Download Completed</string>
     <string name="remove_favorite">Remove favorite</string>
+    <string name="favorite_list">List favorite</string>
 </resources>

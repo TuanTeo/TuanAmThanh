@@ -34,10 +34,10 @@ public class ListFavoriteSongAdapter extends RecyclerView.Adapter<ListFavoriteSo
     protected static List<Song> mListSong;
     private static ILocalSongClickListener mListener;
 
-    public ListFavoriteSongAdapter(Context context) {
+    public ListFavoriteSongAdapter(Context context, ILocalSongClickListener listener) {
         mContext = context;
         mListSong = SongUtils.getListFavoriteSong(mContext);
-//        mListener = listener;
+        mListener = listener;
     }
 
     @NonNull
@@ -81,7 +81,7 @@ public class ListFavoriteSongAdapter extends RecyclerView.Adapter<ListFavoriteSo
                             Toast.makeText(mContext, mContext.getString(R.string.added_to_favorite),
                                     Toast.LENGTH_SHORT).show();
 
-//                            mListener.updateListLocalSong();
+                            mListener.updateListLocalSong();
                             return true;
                         default:
                             return false;
@@ -103,7 +103,7 @@ public class ListFavoriteSongAdapter extends RecyclerView.Adapter<ListFavoriteSo
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSongName;
         private TextView mSingerName;
         private ImageView mSongImageview;
@@ -115,13 +115,13 @@ public class ListFavoriteSongAdapter extends RecyclerView.Adapter<ListFavoriteSo
             mSingerName = itemView.findViewById(R.id.local_singer_name);
             mSongImageview = itemView.findViewById(R.id.local_song_image_view);
             mMenuImageView = itemView.findViewById(R.id.local_song_more_menu);
-//            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
-//        @Override
-//        public void onClick(View v) {
-//            mListener.playSong(mListSong.get(getAdapterPosition()), false, false);
-//        }
+        @Override
+        public void onClick(View v) {
+            mListener.playSong(mListSong.get(getAdapterPosition()), false, false);
+        }
 
         public ImageView getSongImageview() {
             return mSongImageview;

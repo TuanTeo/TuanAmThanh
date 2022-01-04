@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.adapter.ListFavoriteSongAdapter;
 import com.dev.tuanteo.tuanamthanh.listener.IFavoriteFragmentListener;
+import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
@@ -25,14 +27,14 @@ import javax.annotation.Nonnull;
 
 public class FavoriteSongFragment extends Fragment {
 
-    private Context mContext;
-    private ArrayList<Song> mListFavoriteSong;
-    private IFavoriteFragmentListener mListener;
+    private final ILocalSongClickListener mListener;
+    private final Context mContext;
 
+    private ArrayList<Song> mListFavoriteSong;
     private RecyclerView mListSongRecyclerView;
     private ListFavoriteSongAdapter mFavoriteSongAdapter;
 
-    public FavoriteSongFragment(Context context, IFavoriteFragmentListener listener) {
+    public FavoriteSongFragment(Context context, ILocalSongClickListener listener) {
         mContext = context;
         mListener = listener;
         mListFavoriteSong = SongUtils.getListFavoriteSong(mContext);
@@ -50,18 +52,11 @@ public class FavoriteSongFragment extends Fragment {
 
     private void initViewComponent(View view) {
         mListSongRecyclerView = view.findViewById(R.id.list_all_song_recycler_view);
-        mFavoriteSongAdapter = new ListFavoriteSongAdapter(mContext);
+        mFavoriteSongAdapter = new ListFavoriteSongAdapter(mContext, mListener);
         mListSongRecyclerView.setAdapter(mFavoriteSongAdapter);
         mListSongRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (mListener != null) {
-            mListener = null;
-        }
+        ((TextView) view.findViewById(R.id.list_all_song_text_view)).setText(mContext.getString(R.string.favorite_list));
     }
 
     public void updateUI() {
