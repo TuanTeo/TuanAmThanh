@@ -10,6 +10,7 @@ import android.util.Log;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.database.DownloadSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.DownloadSongProvider;
+import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 
 import java.lang.ref.WeakReference;
@@ -153,5 +154,38 @@ public class SongUtils {
         }
 
         return listDownloadSong;
+    }
+
+    /**
+     * Danh sách bài hát yêu thích
+     * @param context
+     * @return
+     */
+    public static ArrayList<Song> getListFavoriteSong(Context context) {
+        ArrayList<Song> listFavoriteSong = new ArrayList<>();
+
+        Cursor cursor = context.getContentResolver().query(FavoriteSongProvider.CONTENT_URI, DownloadSongDatabase.BASE_COLUMN,
+                null, null, null);
+
+        if (cursor!=null && cursor.moveToFirst()) {
+            do {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_NAME));
+                String artist = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ARTIST));
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_PATH));
+                String image = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_IMAGE));
+                String album = cursor.getString(cursor.getColumnIndexOrThrow(DownloadSongDatabase.COLUMN_SONG_ALBUM));
+
+                Song song = new Song(id, name, artist, path, image, album);
+                listFavoriteSong.add(song);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        Collections.sort(listFavoriteSong);
+
+        return listFavoriteSong;
     }
 }

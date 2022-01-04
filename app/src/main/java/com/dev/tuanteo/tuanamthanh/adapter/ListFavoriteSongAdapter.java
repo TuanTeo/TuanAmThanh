@@ -1,13 +1,6 @@
 package com.dev.tuanteo.tuanamthanh.adapter;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -33,31 +24,33 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 
-import java.util.Collections;
 import java.util.List;
 
-public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdapter.ViewHolder> {
+import javax.annotation.Nonnull;
+
+public class ListFavoriteSongAdapter extends RecyclerView.Adapter<ListFavoriteSongAdapter.ViewHolder> {
 
     protected Context mContext;
     protected static List<Song> mListSong;
     private static ILocalSongClickListener mListener;
 
-    public ListLocalSongAdapter(Context context, List<Song> listSong, ILocalSongClickListener listener) {
+    public ListFavoriteSongAdapter(Context context) {
         mContext = context;
-        mListSong = listSong;
-        mListener = listener;
+        mListSong = SongUtils.getListFavoriteSong(mContext);
+//        mListener = listener;
     }
 
     @NonNull
+    @Nonnull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull @Nonnull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.local_song_item, parent, false);
-        return new ViewHolder(view);
+        return new ListFavoriteSongAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @Nonnull ViewHolder holder, int position) {
         holder.getSongName().setText(mListSong.get(position).getName());
         holder.getSingerName().setText(mListSong.get(position).getArtist());
 
@@ -72,42 +65,23 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(mContext, holder.mMenuImageView);
                 //inflating menu from xml resource
-                popup.inflate(R.menu.song_options_menu);
+                popup.inflate(R.menu.favorite_option_menu);
                 //adding click listener
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.play_song_action:
                             mListener.playSong(mListSong.get(position), false, false);
                             return true;
-                        case R.id.delete_song_action:
-                            /*TuanTeo: Xoa bai hat Offline */
-                            boolean result = Utils.deleteFileUsingDisplayName(mContext, Utils.getNameFileByPath(mListSong.get(position).getPath()));
-
-                            if (!result) {
-                                mContext.getContentResolver().delete(DownloadSongProvider.CONTENT_URI,
-                                        DownloadSongDatabase.COLUMN_SONG_ID + " =?",
-                                        new String[] {mListSong.get(position).getId()});
-                            }
-                            Toast.makeText(mContext, mContext.getString(R.string.deleted_complete),
-                                    Toast.LENGTH_SHORT).show();
-
+                        case R.id.remove_favorite_song_action:
                             /*TuanTeo: Xoa khoi bai hat yeu thich */
                             mContext.getContentResolver().delete(FavoriteSongProvider.CONTENT_URI,
                                     FavoriteSongDatabase.COLUMN_SONG_ID + " =?",
                                     new String[] {mListSong.get(position).getId()});
 
-                            mListener.updateListLocalSong();
-
-                            return true;
-                        case R.id.favorite_song_action:
-                            /*TuanTeo: Them vao bai hat yeu thich */
-                            mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI,
-                                    SongUtils.getContentDownloadSong(mListSong.get(position)));
-
                             Toast.makeText(mContext, mContext.getString(R.string.added_to_favorite),
                                     Toast.LENGTH_SHORT).show();
 
-                            mListener.updateListLocalSong();
+//                            mListener.updateListLocalSong();
                             return true;
                         default:
                             return false;
@@ -125,11 +99,11 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
     }
 
     public void updateListLocalSong() {
-        mListSong = SongUtils.getListLocalSong(mContext);
+        mListSong = SongUtils.getListFavoriteSong(mContext);
         notifyDataSetChanged();
     }
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mSongName;
         private TextView mSingerName;
         private ImageView mSongImageview;
@@ -141,13 +115,13 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
             mSingerName = itemView.findViewById(R.id.local_singer_name);
             mSongImageview = itemView.findViewById(R.id.local_song_image_view);
             mMenuImageView = itemView.findViewById(R.id.local_song_more_menu);
-            itemView.setOnClickListener(this);
+//            itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            mListener.playSong(mListSong.get(getAdapterPosition()), false, false);
-        }
+//        @Override
+//        public void onClick(View v) {
+//            mListener.playSong(mListSong.get(getAdapterPosition()), false, false);
+//        }
 
         public ImageView getSongImageview() {
             return mSongImageview;
@@ -161,16 +135,5 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
         public ImageView getMenuImageView() {
             return mMenuImageView;
         }
-    }
-
-    /**
-     * Tuantqd
-     * Function to get Image Uri by AlbumID
-     * @param imgUri
-     * @return
-     */
-    public static Uri queryAlbumUri(String imgUri) {   //dung album de load anh
-        final Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
-        return ContentUris.withAppendedId(artworkUri, Long.parseLong(imgUri));  //noi them imgUri vao artworkUri
     }
 }

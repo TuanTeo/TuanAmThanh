@@ -39,10 +39,12 @@ import com.dev.tuanteo.tuanamthanh.adapter.MainPagerAdapter;
 import com.dev.tuanteo.tuanamthanh.adapter.SearchAdapter;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.fragment.DetailSongFragment;
+import com.dev.tuanteo.tuanamthanh.fragment.FavoriteSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.HomeFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.ListAllSongFragment;
 import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
 import com.dev.tuanteo.tuanamthanh.listener.HomeFragmentListener;
+import com.dev.tuanteo.tuanamthanh.listener.IFavoriteFragmentListener;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
@@ -57,7 +59,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements ILocalSongClickListener,
-        HomeFragmentListener {
+        HomeFragmentListener, IFavoriteFragmentListener {
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
 
     private ListAllSongFragment mListLocalSongFragment;
     private HomeFragment mHomeFragment;
+    private FavoriteSongFragment mFavoriteSongFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,9 +178,11 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             if (position == 0) {
                 tabName = "Home";
                 icon = R.drawable.ic_home;
-            } else {
+            } else if (position == 1) {
                 tabName = "Library";
                 icon = R.drawable.ic_library_music;
+            } else {
+                icon = R.drawable.ic_favorite_tab;
             }
 //            tab.setText(tabName);
             tab.setIcon(icon);
@@ -248,11 +253,12 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
         // TODO: 1/2/2022 them danh sách nhạc yeu thích
         mHomeFragment = new HomeFragment(getApplicationContext(), this);
         mListLocalSongFragment = new ListAllSongFragment(getApplicationContext(), this);
+        mFavoriteSongFragment = new FavoriteSongFragment(getApplicationContext(), this);
 
         List<Fragment> listFragment = new ArrayList<>();
         listFragment.add(mHomeFragment);
         listFragment.add(mListLocalSongFragment);
-//        listFragment.add(new ListAllSongFragment(getApplicationContext(), this));
+        listFragment.add(mFavoriteSongFragment);
         return listFragment;
     }
 
@@ -386,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     @Override
     public void updateListLocalSong() {
         mListLocalSongFragment.updateUI();
+        mFavoriteSongFragment.updateUI();
     }
 
     /**

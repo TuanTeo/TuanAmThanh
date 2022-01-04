@@ -94,8 +94,9 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
                             mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI,
                                     SongUtils.getContentDownloadSong(mListSuggestSong.get(position)));
 
-                            Toast.makeText(mContext, mContext.getString(R.string.added_to_favorite),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.added_to_favorite), Toast.LENGTH_SHORT).show();
+
+                            mListener.updateListLocalSong();
                             return true;
                         default:
                             return false;

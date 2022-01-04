@@ -13,28 +13,34 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dev.tuanteo.tuanamthanh.R;
-import com.dev.tuanteo.tuanamthanh.adapter.ListLocalSongAdapter;
-import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
+import com.dev.tuanteo.tuanamthanh.adapter.ListFavoriteSongAdapter;
+import com.dev.tuanteo.tuanamthanh.listener.IFavoriteFragmentListener;
+import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
-public class ListAllSongFragment extends Fragment {
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
 
 
-    private final Context mContext;
+public class FavoriteSongFragment extends Fragment {
+
+    private Context mContext;
+    private ArrayList<Song> mListFavoriteSong;
+    private IFavoriteFragmentListener mListener;
+
     private RecyclerView mListSongRecyclerView;
-    private ILocalSongClickListener mItemClickListener;
-    private ListLocalSongAdapter mLocalSongAdapter;
+    private ListFavoriteSongAdapter mFavoriteSongAdapter;
 
-    public ListAllSongFragment(Context context, ILocalSongClickListener listener) {
-        this.mContext = context;
-        mItemClickListener = listener;
+    public FavoriteSongFragment(Context context, IFavoriteFragmentListener listener) {
+        mContext = context;
+        mListener = listener;
+        mListFavoriteSong = SongUtils.getListFavoriteSong(mContext);
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull @Nonnull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.list_all_song_fragment, container, false);
 
@@ -44,9 +50,8 @@ public class ListAllSongFragment extends Fragment {
 
     private void initViewComponent(View view) {
         mListSongRecyclerView = view.findViewById(R.id.list_all_song_recycler_view);
-        mLocalSongAdapter = new ListLocalSongAdapter(mContext,
-                    SongUtils.getListLocalSong(mContext), mItemClickListener);
-        mListSongRecyclerView.setAdapter(mLocalSongAdapter);
+        mFavoriteSongAdapter = new ListFavoriteSongAdapter(mContext);
+        mListSongRecyclerView.setAdapter(mFavoriteSongAdapter);
         mListSongRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
@@ -54,14 +59,14 @@ public class ListAllSongFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if (mItemClickListener != null) {
-            mItemClickListener = null;
+        if (mListener != null) {
+            mListener = null;
         }
     }
 
     public void updateUI() {
-        if (mLocalSongAdapter != null) {
-            mLocalSongAdapter.updateListLocalSong();
+        if (mFavoriteSongAdapter != null) {
+            mFavoriteSongAdapter.updateListLocalSong();
         }
     }
 }
