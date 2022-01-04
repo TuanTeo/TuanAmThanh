@@ -251,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * @return
      */
     private List<Fragment> initListFragments() {
-        // TODO: 1/2/2022 them danh sách nhạc yeu thích
         mHomeFragment = new HomeFragment(getApplicationContext(), this);
         mListLocalSongFragment = new ListAllSongFragment(getApplicationContext(), this);
         mFavoriteSongFragment = new FavoriteSongFragment(getApplicationContext(), this);
@@ -279,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        // TODO: 12/26/2021 Làm lại đoạn này
         MenuItem myActionMenuItem = menu.findItem( R.id.app_bar_search);
         mSearchView = (SearchView) myActionMenuItem.getActionView();
         mSearchRV = findViewById(R.id.search_result_recycler_view);
@@ -317,7 +315,6 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                // TODO: 12/25/2021 hiển thị danh sách kết quả
                 newText = newText.toLowerCase();
 
                 ArrayList<Song> resultList = new ArrayList<>();

@@ -72,7 +72,6 @@ public class Utils {
         String[] projection;
         projection = new String[]{MediaStore.Files.FileColumns._ID};
 
-        // TODO This will break if we have no matching item in the MediaStore.
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection,
                 MediaStore.Audio.Media.DISPLAY_NAME + " LIKE ?", new String[]{displayName}, null);
         assert cursor != null;

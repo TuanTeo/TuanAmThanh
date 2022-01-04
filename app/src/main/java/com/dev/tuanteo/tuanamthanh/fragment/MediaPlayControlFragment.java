@@ -147,7 +147,6 @@ public class MediaPlayControlFragment extends Fragment {
 
         mFavoriteButton = view.findViewById(R.id.favorite_button);
         mFavoriteButton.setOnClickListener(v -> {
-            // TODO: 12/31/2021 Them logic danh sach yeu thich
             if (mIsFavorite) {
                 mIsFavorite = false;
                 mFavoriteButton.setImageResource(R.drawable.ic_favorite_border);
