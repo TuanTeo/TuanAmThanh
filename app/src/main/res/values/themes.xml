@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.TuanAmThanh.Default" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#00EC0C</item>
+        <item name="colorPrimary">#1B89FF</item>
         <item name="colorPrimaryVariant">#00000000</item>
         <item name="colorOnPrimary">#00000000</item>
         <!-- Secondary brand color. -->
