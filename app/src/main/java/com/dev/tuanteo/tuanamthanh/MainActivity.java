@@ -46,6 +46,7 @@ import com.dev.tuanteo.tuanamthanh.fragment.MediaPlayControlFragment;
 import com.dev.tuanteo.tuanamthanh.listener.HomeFragmentListener;
 import com.dev.tuanteo.tuanamthanh.listener.IFavoriteFragmentListener;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
+import com.dev.tuanteo.tuanamthanh.listener.MediaControlListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
@@ -59,7 +60,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements ILocalSongClickListener,
-        HomeFragmentListener, IFavoriteFragmentListener {
+        HomeFragmentListener, IFavoriteFragmentListener, MediaControlListener {
 
     private ViewPager2 mMainViewPager;
     private TabLayout mMainTabView;
@@ -266,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
      * Hiển thị giao diện MainPlayerController
      */
     private void showMediaPlayerControlFragment() {
-        mMediaPlayControlFragment = new MediaPlayControlFragment(getApplicationContext(), mMediaService);
+        mMediaPlayControlFragment = new MediaPlayControlFragment(getApplicationContext(), mMediaService, this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_frame_layout, mMediaPlayControlFragment)
                 .addToBackStack(null)
@@ -522,5 +523,10 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    @Override
+    public void updateListFavoriteSong() {
+        mFavoriteSongFragment.updateUI();
     }
 }

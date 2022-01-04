@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
+import com.dev.tuanteo.tuanamthanh.listener.MediaControlListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
@@ -30,6 +31,8 @@ public class MediaPlayControlFragment extends Fragment {
 
     private final Context mContext;
     private MediaPlayService mMediaPlayService;
+
+    private MediaControlListener mListener;
 
     /*TuanTeo: Các phần tử của giao diện MediaPlayback */
     private TextView mSongNameTView;
@@ -63,9 +66,11 @@ public class MediaPlayControlFragment extends Fragment {
         }
     };
 
-    public MediaPlayControlFragment(Context mContext, MediaPlayService mediaPlayService) {
+    public MediaPlayControlFragment(Context mContext, MediaPlayService mediaPlayService,
+                                    MediaControlListener listener) {
         this.mContext = mContext;
         mMediaPlayService = mediaPlayService;
+        mListener = listener;
     }
 
     @Override
@@ -159,6 +164,8 @@ public class MediaPlayControlFragment extends Fragment {
                 mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI,
                         SongUtils.getContentDownloadSong(mMediaPlayService.getCurrentPlaySong()));
             }
+
+            mListener.updateListFavoriteSong();
         });
     }
 
