@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
             bindMediaPlayService();
         } else {
             /*TuanTeo: Neu bind service rồi thì chạy bài hát được chọn */
-            mMediaService.playSong(song, isOnline, true, isSuggestList);
+            mMediaService.playSong(song, true);
         }
     }
 

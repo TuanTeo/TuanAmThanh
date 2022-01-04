@@ -22,6 +22,7 @@ import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Artist;
 import com.dev.tuanteo.tuanamthanh.object.MusicCategory;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.service.ListPlaySong;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
 import java.util.ArrayList;
@@ -82,6 +83,9 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.play_song_action:
+                            /*TuanTeo: Cập nhật danh sách bài hát muốn phát */
+                            ListPlaySong.getInstance().setPlayList((ArrayList<Song>) mListSuggestSong);
+
                             mListener.playSong(mListSuggestSong.get(position), true, true);
                             return true;
                         case R.id.download_song_action:
@@ -164,6 +168,9 @@ public class ListSuggestAdapter extends RecyclerView.Adapter<ListSuggestAdapter.
 
         @Override
         public void onClick(View v) {
+            /*TuanTeo: Cập nhật danh sách bài hát muốn phát */
+            ListPlaySong.getInstance().setPlayList((ArrayList<Song>) mListSuggestSong);
+
             mListener.playSong(mListSuggestSong.get(getAdapterPosition()), true, mIsSuggest);
         }
     }

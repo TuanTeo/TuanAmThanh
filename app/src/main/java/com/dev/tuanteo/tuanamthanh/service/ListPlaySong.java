@@ -17,7 +17,7 @@ public class ListPlaySong {
         if (sInstance != null) {
             return sInstance;
         } else {
-            return new ListPlaySong();
+            return sInstance = new ListPlaySong();
         }
     }
 

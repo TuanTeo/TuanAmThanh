@@ -15,6 +15,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.service.ListPlaySong;
+import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         @Override
         public void onClick(View v) {
-            mListener.playSong(mListResultSong.get(getAdapterPosition()), false, false);
+            Song song = mListResultSong.get(getAdapterPosition());
+
+            /*TuanTeo: Cập nhật danh sách bài hát muốn phát */
+            ListPlaySong.getInstance().setPlayList(
+                    (ArrayList<Song>) SongUtils.getListArtistSong(song.getArtist()));
+
+            mListener.playSong(song, false, false);
         }
 
         public ImageView getSongImageview() {

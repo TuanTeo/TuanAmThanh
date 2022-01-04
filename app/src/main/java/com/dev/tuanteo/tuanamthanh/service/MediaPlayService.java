@@ -100,13 +100,8 @@ public class MediaPlayService extends Service {
         mCurrentSong.setPath(mPlayingSongPath);
         mCurrentSong.setImage(mPlayingSongImage);
 
-        /*TuanTeo: Khởi tạo danh sách bài hát ban đầu */
-        if (mIsOnlineList) {
-            mListPlaySong = FirebaseFireStoreAPI.getListFindSong();
-//            Utils.updateDurationForListSong(mListPlaySong);
-        } else {
-            new Thread(() -> mListPlaySong = SongUtils.getListLocalSong(getApplicationContext())).start();
-        }
+        /*TuanTeo: Cập nhật danh sách bài hát */
+        mListPlaySong = ListPlaySong.getInstance().getPlayList();
 
         initComponent();
 
@@ -201,11 +196,11 @@ public class MediaPlayService extends Service {
      * Hàm phát 1 bài hát chỉ định
      * @param song bài hát chỉ định
      */
-    public void playSong(Song song, boolean isOnline, boolean isNeedUpdate, boolean isSuggestList) {
+    public void playSong(Song song, boolean isNeedUpdate) {
         /*TuanTeo: Cập nhật lại danh sách bài hát nếu cần */
         if (isNeedUpdate) {
-            mIsOnlineList = isOnline;
-            updateListPlaySong(isSuggestList);
+            /*TuanTeo: Cập nhật danh sách bài hát */
+            mListPlaySong = ListPlaySong.getInstance().getPlayList();
         }
 
         mCurrentSong = song;
@@ -278,7 +273,7 @@ public class MediaPlayService extends Service {
             ++mPlayIndex;
         }
         try {
-            playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
+            playSong(mListPlaySong.get(mPlayIndex), false);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -300,7 +295,7 @@ public class MediaPlayService extends Service {
             --mPlayIndex;
         }
         try {
-            playSong(mListPlaySong.get(mPlayIndex), mIsOnlineList, false, false);
+            playSong(mListPlaySong.get(mPlayIndex), false);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();

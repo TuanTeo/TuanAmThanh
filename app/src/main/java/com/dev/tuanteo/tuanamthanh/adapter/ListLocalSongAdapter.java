@@ -30,9 +30,11 @@ import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.ILocalSongClickListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
+import com.dev.tuanteo.tuanamthanh.service.ListPlaySong;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,6 +79,9 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.play_song_action:
+                            /*TuanTeo: Cập nhật danh sách bài hát muốn phát */
+                            ListPlaySong.getInstance().setPlayList((ArrayList<Song>) mListSong);
+
                             mListener.playSong(mListSong.get(position), false, false);
                             return true;
                         case R.id.delete_song_action:
@@ -146,6 +151,9 @@ public class ListLocalSongAdapter extends RecyclerView.Adapter<ListLocalSongAdap
 
         @Override
         public void onClick(View v) {
+            /*TuanTeo: Cập nhật danh sách bài hát muốn phát */
+            ListPlaySong.getInstance().setPlayList((ArrayList<Song>) mListSong);
+
             mListener.playSong(mListSong.get(getAdapterPosition()), false, false);
         }
 
