@@ -16,13 +16,15 @@ import com.dev.tuanteo.tuanamthanh.object.Song;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SongUtils {
 
     public static final ArrayList<Song> getListLocalSong(Context context) {
         WeakReference<Context> contextWeakReference = new WeakReference<>(context);
-        final ArrayList<Song> tempAudioList = new ArrayList<>();
+        ArrayList<Song> tempAudioList = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
@@ -82,6 +84,23 @@ public class SongUtils {
         return tempAudioList;
     }
 
+    /**
+     * Loại bỏ các bài hát trùng nhau khi tìm kiếm
+     * @param listSong
+     * @return
+     */
+    private static ArrayList<Song> removeDuplicateSong(ArrayList<Song> listSong) {
+        Set<String> datas = new HashSet<String>();
+        ArrayList<Song> songList = new ArrayList<Song>();
+        for(Song song: listSong) {
+            if (datas.add(song.getId())) {
+                songList.add(song);
+            }
+        }
+
+        return songList;
+    }
+
     public static final ArrayList<Song> getListAllSong(Context context) {
         WeakReference<Context> contextWeakReference = new WeakReference<>(context);
 
@@ -91,6 +110,9 @@ public class SongUtils {
 
         allSongList.addAll(localSongList);
         allSongList.addAll(onlineSongList);
+
+        /*TuanTeo: Remove bài hát trùng */
+        allSongList = removeDuplicateSong(allSongList);
 
         return allSongList;
     }
