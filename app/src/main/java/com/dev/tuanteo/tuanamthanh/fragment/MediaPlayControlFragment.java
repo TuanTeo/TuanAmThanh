@@ -21,6 +21,7 @@ import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongDatabase;
 import com.dev.tuanteo.tuanamthanh.database.FavoriteSongProvider;
 import com.dev.tuanteo.tuanamthanh.listener.MediaControlListener;
+import com.dev.tuanteo.tuanamthanh.object.RepeatType;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
@@ -46,6 +47,7 @@ public class MediaPlayControlFragment extends Fragment {
     private ImageView mNavigateBackButton;
     private ImageView mFavoriteButton;
     private ImageView mRandomButton;
+    private ImageView mRepeatButton;
 
     /*TuanTeo: bien luu trang thai dang hien thi cua fragment */
     public boolean mIsDisplaying;
@@ -179,6 +181,22 @@ public class MediaPlayControlFragment extends Fragment {
                 SharePreferenceUtils.getInstance(mContext).putShufflerValue(true);
             }
         });
+
+        mRepeatButton = view.findViewById(R.id.play_repeat_button);
+        mRepeatButton.setOnClickListener(v -> {
+            if (SharePreferenceUtils.getInstance(mContext).getRepeatType()
+                    .equals(String.valueOf(RepeatType.REPEAT_NO))) {
+                mRepeatButton.setImageResource(R.drawable.ic_repeat_all);
+                SharePreferenceUtils.getInstance(mContext).setRepeatType(RepeatType.REPEAT_ALL);
+            } else if (SharePreferenceUtils.getInstance(mContext).getRepeatType()
+                    .equals(String.valueOf(RepeatType.REPEAT_ALL))) {
+                mRepeatButton.setImageResource(R.drawable.ic_repeat_one);
+                SharePreferenceUtils.getInstance(mContext).setRepeatType(RepeatType.REPEAT_ONE);
+            } else {
+                mRepeatButton.setImageResource(R.drawable.ic_repeat_off);
+                SharePreferenceUtils.getInstance(mContext).setRepeatType(RepeatType.REPEAT_NO);
+            }
+        });
     }
 
     @Override
@@ -222,6 +240,16 @@ public class MediaPlayControlFragment extends Fragment {
             mRandomButton.setImageResource(R.drawable.ic_random_on);
         } else {
             mRandomButton.setImageResource(R.drawable.ic_random_off);
+        }
+
+        if (SharePreferenceUtils.getInstance(mContext).getRepeatType()
+                .equals(String.valueOf(RepeatType.REPEAT_NO))) {
+            mRepeatButton.setImageResource(R.drawable.ic_repeat_off);
+        } else if (SharePreferenceUtils.getInstance(mContext).getRepeatType()
+                .equals(String.valueOf(RepeatType.REPEAT_ALL))) {
+            mRepeatButton.setImageResource(R.drawable.ic_repeat_all);
+        } else {
+            mRepeatButton.setImageResource(R.drawable.ic_repeat_one);
         }
     }
 
