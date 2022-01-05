@@ -27,13 +27,14 @@ import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
+import com.dev.tuanteo.tuanamthanh.units.SharePreferenceUtils;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import com.dev.tuanteo.tuanamthanh.units.Utils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MediaPlayService extends Service {
 
@@ -267,7 +268,9 @@ public class MediaPlayService extends Service {
      * Next bài hát
      */
     public void nextMusic() {
-        if (mPlayIndex == mListPlaySong.size() - 1) {
+        if (SharePreferenceUtils.getInstance(getApplicationContext()).getShufflerValue()) {
+            mPlayIndex = ThreadLocalRandom.current().nextInt(0, mListPlaySong.size());
+        } else if (mPlayIndex == mListPlaySong.size() - 1) {
             mPlayIndex = 0;
         } else {
             ++mPlayIndex;
@@ -289,6 +292,9 @@ public class MediaPlayService extends Service {
     public void previousMusic() {
         /*TuanTeo: Logic nghe lại bài hát nếu thích */
         if (mMediaPlayer.getCurrentPosition() > 3000) {
+
+        } else if (SharePreferenceUtils.getInstance(getApplicationContext()).getShufflerValue()) {
+            mPlayIndex = ThreadLocalRandom.current().nextInt(0, mListPlaySong.size());
         } else if (mPlayIndex == 0) {
             mPlayIndex = mListPlaySong.size() - 1;
         } else {
