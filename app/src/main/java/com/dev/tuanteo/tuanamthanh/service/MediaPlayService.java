@@ -24,6 +24,7 @@ import androidx.core.app.NotificationCompat;
 import com.dev.tuanteo.tuanamthanh.MainActivity;
 import com.dev.tuanteo.tuanamthanh.R;
 import com.dev.tuanteo.tuanamthanh.api.FirebaseFireStoreAPI;
+import com.dev.tuanteo.tuanamthanh.object.RepeatType;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.receiver.NotificationReceiver;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
@@ -268,13 +269,8 @@ public class MediaPlayService extends Service {
      * Next bài hát
      */
     public void nextMusic() {
-        if (SharePreferenceUtils.getInstance(getApplicationContext()).getShufflerValue()) {
-            mPlayIndex = ThreadLocalRandom.current().nextInt(0, mListPlaySong.size());
-        } else if (mPlayIndex == mListPlaySong.size() - 1) {
-            mPlayIndex = 0;
-        } else {
-            ++mPlayIndex;
-        }
+        updateNextPosition();
+
         try {
             playSong(mListPlaySong.get(mPlayIndex), false);
         } catch (IndexOutOfBoundsException e) {
@@ -286,12 +282,32 @@ public class MediaPlayService extends Service {
         sendBroadcastUpdateUI();
     }
 
+    private void updateNextPosition() {
+        /*TuanTeo: Lặp lại 1 bài */
+        if (SharePreferenceUtils.getInstance(getApplicationContext()).getRepeatType()
+                .equals(String.valueOf(RepeatType.REPEAT_ONE))) {
+        }
+        /*TuanTeo: Lặp lại tất cả & random -> random */
+        else if (SharePreferenceUtils.getInstance(getApplicationContext()).getShufflerValue()) {
+            mPlayIndex = ThreadLocalRandom.current().nextInt(0, mListPlaySong.size());
+        }
+        /*TuanTeo: Lặp lại tất cả & không random & ở cuối -> mở bài đầu*/
+        else if (mPlayIndex == mListPlaySong.size() - 1) {
+            mPlayIndex = 0;
+        }
+        else {
+            ++mPlayIndex;
+        }
+    }
+
     /**
      * Lùi bài hát
      */
     public void previousMusic() {
-        /*TuanTeo: Logic nghe lại bài hát nếu thích */
-        if (mMediaPlayer.getCurrentPosition() > 3000) {
+        /*TuanTeo: Logic nghe lại bài hát nếu thích Hoặc Lặp lại 1 bài */
+        if (mMediaPlayer.getCurrentPosition() > 3000 ||
+                SharePreferenceUtils.getInstance(getApplicationContext()).getRepeatType()
+                        .equals(String.valueOf(RepeatType.REPEAT_ONE))) {
 
         } else if (SharePreferenceUtils.getInstance(getApplicationContext()).getShufflerValue()) {
             mPlayIndex = ThreadLocalRandom.current().nextInt(0, mListPlaySong.size());
@@ -343,8 +359,15 @@ public class MediaPlayService extends Service {
     }
 
     private void autoNextMedia() {
-        /*TuanTeo: Logic phát bài hát tiếp theo */
-        nextMusic();
+        /*TuanTeo: Ở cuối && không lặp lại -> không phát nữa*/
+        if (mPlayIndex == mListPlaySong.size() - 1
+                && SharePreferenceUtils.getInstance(getApplicationContext()).getRepeatType()
+                .equals(String.valueOf(RepeatType.REPEAT_NO))) {
+            sendBroadcastUpdateUI();
+        } else {
+            /*TuanTeo: Logic phát bài hát tiếp theo */
+            nextMusic();
+        }
     }
 
     /**
