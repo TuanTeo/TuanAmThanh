@@ -24,6 +24,7 @@ import com.dev.tuanteo.tuanamthanh.listener.MediaControlListener;
 import com.dev.tuanteo.tuanamthanh.object.Song;
 import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
+import com.dev.tuanteo.tuanamthanh.units.SharePreferenceUtils;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
 import com.dev.tuanteo.tuanamthanh.view.CircularSeekBar;
 
@@ -44,6 +45,7 @@ public class MediaPlayControlFragment extends Fragment {
     private CircularSeekBar mSeekBar;
     private ImageView mNavigateBackButton;
     private ImageView mFavoriteButton;
+    private ImageView mRandomButton;
 
     /*TuanTeo: bien luu trang thai dang hien thi cua fragment */
     public boolean mIsDisplaying;
@@ -166,6 +168,17 @@ public class MediaPlayControlFragment extends Fragment {
 
             mListener.updateListFavoriteSong();
         });
+
+        mRandomButton = view.findViewById(R.id.play_random_button);
+        mRandomButton.setOnClickListener(v -> {
+            if (SharePreferenceUtils.getInstance(mContext).getShufflerValue()) {
+                mRandomButton.setImageResource(R.drawable.ic_random_off);
+                SharePreferenceUtils.getInstance(mContext).putShufflerValue(false);
+            } else {
+                mRandomButton.setImageResource(R.drawable.ic_random_on);
+                SharePreferenceUtils.getInstance(mContext).putShufflerValue(true);
+            }
+        });
     }
 
     @Override
@@ -203,6 +216,12 @@ public class MediaPlayControlFragment extends Fragment {
             mFavoriteButton.setImageResource(R.drawable.ic_favorite_border);
         } else {
             mFavoriteButton.setImageResource(R.drawable.ic_favorited);
+        }
+
+        if (SharePreferenceUtils.getInstance(mContext).getShufflerValue()) {
+            mRandomButton.setImageResource(R.drawable.ic_random_on);
+        } else {
+            mRandomButton.setImageResource(R.drawable.ic_random_off);
         }
     }
 

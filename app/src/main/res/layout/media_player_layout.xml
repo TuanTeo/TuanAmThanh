@@ -48,11 +48,13 @@
         app:layout_constraintTop_toBottomOf="@id/play_album_image" />
 
     <ImageButton
-        android:visibility="invisible"
+        android:visibility="visible"
         android:id="@+id/play_random_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_navigate_before_control"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_random_off"
+        android:backgroundTint="@android:color/transparent"
+        android:backgroundTintMode="screen"
         app:layout_constraintBottom_toBottomOf="@+id/play_start_pause_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_previous_button"
