@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -91,5 +93,17 @@ public class Utils {
     public static String getNameFileByPath(String path) {
         String[] splits = path.split("/");
         return splits[splits.length -1];
+    }
+
+    /**
+     * Hàm check trạng thái mạng có kết nối hay không
+     * @param context
+     * @return
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -52,6 +52,7 @@ import com.dev.tuanteo.tuanamthanh.service.MediaPlayService;
 import com.dev.tuanteo.tuanamthanh.units.Constant;
 import com.dev.tuanteo.tuanamthanh.units.LogUtils;
 import com.dev.tuanteo.tuanamthanh.units.SongUtils;
+import com.dev.tuanteo.tuanamthanh.units.Utils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -368,6 +369,12 @@ public class MainActivity extends AppCompatActivity implements ILocalSongClickLi
     public void playSong(Song song, boolean isOnline, boolean isSuggestList) {
         /*TuanTeo: Cập nhật UI trên giao diên điều khiển nhạc */
         updateUIMainPlayerController(song);
+
+        /*TuanTeo: Nghe nhạc online cần kiểm tra trạng thái mạng */
+        if (isOnline && !Utils.isNetworkAvailable(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(), "Kết nối mạng và thử lại", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (!mIsBoundMediaService && mMediaService == null) {
             if (mMainPlayerController.getVisibility() == View.GONE) {
